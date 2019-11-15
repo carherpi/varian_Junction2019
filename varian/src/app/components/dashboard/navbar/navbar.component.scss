@@ -1,0 +1,28 @@
+
+
+.mat-toolbar { 
+    color: white;
+    background-color: #00cccc;
+    height: 6em;
+  }
+  
+  img {
+    width: 15em;
+    display: block;
+  }
+  
+  .right-toolbar {
+    margin-left: auto;
+  }
+  
+  .right-toolbar > span{
+    margin-left: 2em;
+    font-size: 0.85em;
+    margin-right: 1.5em;
+  }
+  
+  .right-toolbar > span :hover{
+    color: #212121;
+  }
+  
+  
