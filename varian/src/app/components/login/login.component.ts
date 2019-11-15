@@ -10,16 +10,25 @@ import { NgForm } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
+  email: String
+  password: String
+
   constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
-  loginSubmit(form: NgForm) {
 
+  loginSubmit(form: NgForm) {
     
-    //this.router.navigate(['/dashboard'])  
-      
+    if (this.password == "123456") {
+      console.log(form)
+      console.log("Succesful login");
+      this.router.navigate(['/dashboard'])  
+    } else {
+      console.log("Wrong password");
+    }
+
       
   }
 

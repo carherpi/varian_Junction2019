@@ -8,12 +8,14 @@ import { Viewer3dComponent } from './components/viewer3d/viewer3d.component';
 
 import { MaterialModule } from './material';
 import { FormsModule } from '@angular/forms';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    Viewer3dComponent
+    Viewer3dComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
