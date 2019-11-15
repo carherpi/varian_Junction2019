@@ -1,1 +1,37 @@
-<p>login works!</p>
+
+<img src="../../../assets/icons/Varian_logo.png" alt="Varian logo" [routerLink]="['/']">
+
+<hr>
+
+<form #loginForm="ngForm">
+    <p style="font-size: 1.5em;">
+        <b>Use your medical credentials</b>
+    </p>
+    <br>  
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput name="email" [(ngModel)]="email" placeholder="Email">    
+      </mat-form-field>
+    </div>
+    
+    <div>
+      <mat-form-field appearance="outline">
+        <input matInput name="password" [(ngModel)]="password" placeholder="Password" [type]="!hide ? 'password' : 'text'">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    
+    <br>  
+    
+    <div>
+      <button mat-stroked-button (click)="loginSubmit(loginForm)">Log In</button>
+    </div> 
+  
+    <br>
+  
+    
+  </form>
+

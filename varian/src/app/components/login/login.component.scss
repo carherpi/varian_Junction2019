@@ -1,0 +1,28 @@
+img {
+    width: 20em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+}
+
+form {    
+    text-align:center;
+    margin-top: 2em;
+}
+
+.mat-form-field {
+    width: 25em;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
+
+.mat-stroked-button {
+    width: 14em;
+    height: 3em;
+    color: #ffffff;    
+    background-color: #00cccc;
+}
+
