@@ -21,12 +21,12 @@ export class LoginComponent implements OnInit {
 
   loginSubmit(form: NgForm) {
     
-    if (this.password == "123456") {
+    if (this.password == "123456" && this.email == "Doc") {
       console.log(form)
       console.log("Succesful login");
       this.router.navigate(['/dashboard'])  
     } else {
-      console.log("Wrong password");
+      console.log("Wrong password or username");
     }
 
       

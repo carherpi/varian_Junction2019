@@ -1,6 +1,5 @@
 import { Component, OnInit,  Input } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
-import { MatSliderChange } from '@angular/material';
 
 @Component({
   selector: 'app-two-dimensional-image',
@@ -11,7 +10,7 @@ export class TwoDimensionalImageComponent implements OnInit {
 
   @Input() patient: any
   @Input() plan: any
-  value: any 
+  @Input() value: any 
 
   minValue: any;
   maxValue: any;

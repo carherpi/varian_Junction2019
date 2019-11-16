@@ -15,7 +15,10 @@ export class PatientComponent implements OnInit {
   patientInfo: any;
 
   plans : string[] = [];
-  plan: string;  
+  plan: string; 
+  planInfo: any; 
+
+  value:any;
 
   rederedBitmaps: any[];
   
@@ -26,8 +29,6 @@ export class PatientComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-
     this.apiService.getPatients()
       .subscribe(res => { 
         for(var i in res) {
