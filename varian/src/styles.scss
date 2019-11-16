@@ -4,6 +4,10 @@
 // Import angular icons
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
+* {
+    font-family: 'Nunito', sans-serif;
+  } 
+
 // Color palette
 $my-app-primary: mat-palette($mat-red, 400);
 $my-app-accent:  mat-palette($mat-blue, 900);

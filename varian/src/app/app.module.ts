@@ -15,9 +15,10 @@ import { TwoDimensionalImageComponent } from './components/dashboard/patient/two
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChecklistComponent } from './components/dashboard/checklist/checklist.component';
 import { NotesComponent } from './components/dashboard/notes/notes.component';
-import { HistogramaComponent } from './components/dashboard/histograma/histograma.component';
+import { HistogramaComponent } from './components/dashboard/patient/histograma/histograma.component';
 import { PatientInfoComponent } from './components/dashboard/patient/patient-info/patient-info.component';
 import { PlanInfoComponent } from './components/dashboard/patient/plan-info/plan-info.component';
+import { SmsComponent } from './components/dashboard/sms/sms.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { PlanInfoComponent } from './components/dashboard/patient/plan-info/plan
     HistogramaComponent,
     PatientInfoComponent,
     PlanInfoComponent,
+    SmsComponent,
   ],
   imports: [
     

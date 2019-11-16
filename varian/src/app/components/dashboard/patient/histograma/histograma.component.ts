@@ -1,13 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 
 import Chart from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
 
-import { PatientComponent } from '../patient/patient.component'
-
-// const patientIdSelected = 'Lung';
-const planIdSelected = 'JSu-IM101'
 
 const StructureColors = [
     {ID: 'Body', Color: 'rgb(255,0,240)'},
@@ -64,6 +60,9 @@ const CriticalOrgansID = CriticalOrgans.map(({ ID }) => ID)
 
 export class HistogramaComponent implements OnInit {
 
+@Input() patientIdSelected : any;
+@Input() planIdSelected : any
+
 
 datasets = new Array<Object>();
 
@@ -73,9 +72,14 @@ constructor(
     ) { }
 
 ngOnInit() {
-    this.getData(this.patientComponent.patient,planIdSelected);
+    this.getData(this.patientIdSelected, this.planIdSelected);
     this.createDVH(this.datasets, 'dvh');
   }
+
+ngOnChanges(changes) {
+    this.getData(this.patientIdSelected, this.planIdSelected);
+    this.createDVH(this.datasets, 'dvh');
+}
 
 createDVH(datasets, elementID) {
     var canvas = document.getElementById(elementID)
