@@ -109,8 +109,8 @@ curveArea(curve) {
             y_0 = point.y;
             start = false;
         } else {
-            dx = point.x - x_0;
-            dy = point.y - y_0;
+            var dx = point.x - x_0;
+            var dy = point.y - y_0;
             area = area + dx*point.y -(dx*dy)/2;
             x_0 = point.x;
             y_0 = point.y;
