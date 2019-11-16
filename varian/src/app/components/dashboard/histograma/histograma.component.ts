@@ -4,10 +4,8 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 import Chart from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
 
-declare var Chart : any;
-
 const patientIdSelected = 'Lung';
-const planIdSelected = 'JSu-IM107' // Assume is given
+const planIdSelected = 'JSu-IM107'
 
 const StructureColors = [
     {ID: 'Body', Color: 'rgb(255,0,240)'},
@@ -190,28 +188,18 @@ getData(patientId,planId){
                         this.extendDataset(DVHdatasets,organData);
                         })
                     planDVH.push({plan: plan, datasets: DVHdatasets});
-                    // this.createDVH(this.datasets, 'dvh');
+                    // Plotters
+                    if (planIndex == (planIDs.length-1)){
+                        var planSelected = planDVH.filter(function(dvh){
+                            console.log(dvh)
+                            return dvh.plan == planId
+                        })
+                        var datasetsSelected = planSelected[0].datasets
+                        this.createDVH(datasetsSelected, 'dvh');
+                    }
                     })
                 })
             })
-        // Plotters
-        console.log('hola',planDVH)
-        for (var i = 0; i < planDVH.length; i++){
-            console.log(i)
-        }
-        planDVH.forEach( dvh => {
-            console.log(dvh)
-        })
-        // var selectedDataset = planDVH.filter(function(dvh){
-        //     console.log(dvh)
-        //     console.log('dvh')
-        //     return dvh.plan == planId
-        // })
-        // console.log(selectedDataset)
-        // selectedDataset = selectedDataset[0].dataset
-        // console.log(selectedDataset)
-        // this.createDVH(selectedDataset, 'dvh');
-        // console.log(planDVH)
         })
     }
 
