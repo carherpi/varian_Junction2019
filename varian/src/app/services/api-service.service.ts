@@ -70,13 +70,13 @@ export class ApiServiceService {
     return this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/dvhcurves')
   }
 
-  getDVHsCurve(patientId, planId, organs){
+ /*getDVHsCurve(patientId, planId, organs){
     var tmp;
     for (var i = 0; i < organs.length; i++){
       tmp.push(this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/dvhcurves/'+organs[i]))
     }
     return tmp;
-  }
+  }*/
 
   getDVHCurve(patientId, planId, curveId){
     return this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/dvhcurves/'+curveId)

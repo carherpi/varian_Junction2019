@@ -1,22 +1,19 @@
 
-
-<form>
-                <h4>Choose a patient</h4>
-                <mat-form-field>
-                        <mat-label>Patient</mat-label>
-                                <mat-select [(ngModel)]="patient" name="patient">
-                                        <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
+<div class="wrapper-row selection">
+        <div class="wrapper-row selection2">
+        <form>
+        <mat-form-field>
+        <mat-label style="margin-top: 50px">Patient</mat-label>
+                <mat-select [(ngModel)]="patient" name="patient">
+                         <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
                                                         {{patient}}
-                                        </mat-option>
-                                </mat-select>
-                </mat-form-field>                                
+                        </mat-option>
+                        </mat-select>
+        </mat-form-field>                                
         </form>
-        <app-patient-info [patient] = "patientInfo"></app-patient-info>
-
-<hr>
-
+        <app-patient-info style="width:100%" [patient] = "patientInfo"></app-patient-info>   
+        </div>
 <form>
-        <h4>Choose a plan</h4>
         <mat-form-field>
                 <mat-label>Plan</mat-label>
                         <mat-select [(ngModel)]="plan" name="plan">
@@ -28,11 +25,35 @@
         
 </form>
 
-<app-two-dimensional-image
-        [patient]="patient"
-        [plan]="plan">
-</app-two-dimensional-image>
-<app-plan-info></app-plan-info>
+</div>
+
+<div class="wrapper-row imagesPatientWrapper">
+        <app-two-dimensional-image class="imagesPatient"
+                [patient]="patient"
+                [plan]="plan"
+                [value]="value"
+                >
+        </app-two-dimensional-image>
+       <div class="column-imag">
+        <app-checklist></app-checklist>
+        <mat-slider style="margin-top:100px;" *ngIf = "plan != undefined"
+        vertical
+        thumbLabel
+        [displayWith]="formatLabel"
+        tickInterval="100"
+        min="{{minValue}}"
+        max="{{maxValue}}"
+        [(ngModel)] = "value">
+        </mat-slider>
+       </div>
+        
+        <app-two-dimensional-image class="imagesPatient"
+                [patient]="patient"
+                [plan]="plan"
+                [value]="value"
+                >
+        </app-two-dimensional-image>
+</div>
 
 
 

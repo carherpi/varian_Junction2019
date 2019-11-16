@@ -1,4 +1,10 @@
 .wrapper-row{
     display: flex;
     flex-direction: row;
+    text-align:center;
+}
+.nav-list{
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
