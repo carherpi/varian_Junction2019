@@ -1,7 +1,8 @@
-app-checklist{
-    display:inline-block;
+.sel{
+    display:flex;
+    flex-direction: row;
     height:200px;
 }
-mat-selection-list{
+.sel1{
     background-color: beige;
 }
