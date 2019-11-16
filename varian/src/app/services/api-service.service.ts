@@ -35,7 +35,7 @@ export class ApiServiceService {
   }
 
   getDVH(patientId, planId){
-    return this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + 'dvh')
+    return this.http.get<any[]>(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + 'dvh')
   }
 
   getDoseVoxels(patientId, planId){
@@ -66,11 +66,19 @@ export class ApiServiceService {
     return this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/isodose-contour/'+ contourId)
   }
 
-  getDVHCuerves(patientId, planId){
+  getDVHCurves(patientId, planId){
     return this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/dvhcurves')
   }
 
-  getDVHCuerve(patientId, planId, curveId){
+  getDVHsCurve(patientId, planId, organs){
+    var tmp;
+    for (var i = 0; i < organs.length; i++){
+      tmp.push(this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/dvhcurves/'+organs[i]))
+    }
+    return tmp;
+  }
+
+  getDVHCurve(patientId, planId, curveId){
     return this.http.get(this.baseURL + 'api/patients/'+ patientId + '/plans/' + planId + '/dvhcurves/'+curveId)
   }
 
