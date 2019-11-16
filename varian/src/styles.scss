@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@include mat-core();
+
+// Import angular icons
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+$custom-typography: mat-typography-config($font-family: '"Arial", roboto;');
+@include mat-core($custom-typography);
