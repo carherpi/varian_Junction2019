@@ -15,6 +15,7 @@ import {
       MatGridListModule, MatListModule, MatIconModule, MatTabsModule,
       MatFormFieldModule, MatInputModule, MatSelectModule, MatRadioModule,
       MatPaginatorModule, MatSidenavModule, MatDialogModule, MatStepperModule,
+      MatExpansionModule, 
       MatExpansionModule, MatSliderModule
     ],
     exports: [

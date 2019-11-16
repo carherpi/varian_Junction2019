@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Viewer3dComponent } from './viewer3d.component';
+import { ChecklistComponent } from './checklist.component';
 
-describe('Viewer3dComponent', () => {
-  let component: Viewer3dComponent;
-  let fixture: ComponentFixture<Viewer3dComponent>;
+describe('ChecklistComponent', () => {
+  let component: ChecklistComponent;
+  let fixture: ComponentFixture<ChecklistComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Viewer3dComponent ]
+      declarations: [ ChecklistComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Viewer3dComponent);
+    fixture = TestBed.createComponent(ChecklistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
