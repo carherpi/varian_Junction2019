@@ -6,8 +6,8 @@ import { Observable, combineLatest } from 'rxjs';
 
 declare var Chart : any;
 
-const patientId = 'Lung';
-const planId = 'JSu-IM107' // Assume is given
+const patientIdSelected = 'Lung';
+const planIdSelected = 'JSu-IM107' // Assume is given
 
 const StructureColors = [
     {ID: 'Body', Color: 'rgb(255,0,240)'},
@@ -69,7 +69,7 @@ datasets = new Array<Object>();
 constructor(private apiService: ApiServiceService) { }
 
 ngOnInit() {
-    this.getHistoData();
+    this.getData(patientIdSelected,planIdSelected);
     this.createDVH(this.datasets, 'dvh');
   }
 
@@ -119,67 +119,74 @@ curveArea(curve) {
     return(area)
 }
 
-// getPlans(patientId) {
+createDatasets(organData) {
+    var organ = organData["Id"];
+    if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
+        var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
+        curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
+        var color2 = StructureColors.filter(function(structure){
+            return structure.ID == organ
+        })
+        var color = color2[0].Color
+        this.datasets.push({
+            label: organ,
+            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+            borderColor: color,
+            data: curve,
+            showLine: true,
+        })
+        if (CriticalOrgansID.includes(organ)) {
+            console.log('hola')
+            var OrganLimits = CriticalOrgans.filter(function(structure){
+                return structure.ID == organ
+            })
+            var Vlimit = OrganLimits[0].V
+            if (Vlimit.length > 0) {
+                this.datasets.push({
+                    label: organ + ' Protocol Limit',
+                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                    borderColor: color,
+                    data: Vlimit,
+                    showLine: true,
+                    borderDash: [10,5],
+                    lineTension: 0
+                })
+            }
+            var MaxDoselimit = OrganLimits[0].MaxDose
+            if (MaxDoselimit != null) {
+                this.datasets.push({
+                        label: organ + ' Max Dose',
+                        backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                        borderColor: color,
+                        data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
+                        showLine: true,
+                        borderDash: [10,5],
+                        lineTension: 0
+                    })
+                }
+            }
+        }
+}
 
-// }
-
-getHistoData(){
+getData(patientId,planId){
+    this.apiService.getPatientPlans(patientIdSelected)
+    .subscribe( planIDs => {
+        let requestsPlans:Observable<any>[] = [];
+        planIDs.forEach( planID => {
+            requestsPlans.push( this.apiService.getDVHCurves(patientId,planId))
+        });
+    })
     this.apiService.getDVHCurves(patientId,planId)
     .subscribe(res => {
         var organs = Object.values(res)
-        let requestsOrgan:Observable<Response>[] = [];
+        let requestsOrgan:Observable<any>[] = [];
         organs.forEach( organ => {
             requestsOrgan.push(this.apiService.getDVHCurve(patientId,planId,organ))
         });
         combineLatest(requestsOrgan).toPromise()
             .then(responseOrgans => {
                 responseOrgans.forEach( organData => {
-                    var organ = organData["Id"];
-                    if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
-                        var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
-                        curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
-                        var color2 = StructureColors.filter(function(structure){
-                            return structure.ID == organ
-                        })
-                        var color = color2[0].Color
-                        this.datasets.push({
-                            label: organ,
-                            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                            borderColor: color,
-                            data: curve,
-                            showLine: true,
-                        })
-                        if (CriticalOrgansID.includes(organ)) {
-                            console.log('hola')
-                            var OrganLimits = CriticalOrgans.filter(function(structure){
-                                return structure.ID == organ
-                            })
-                            var Vlimit = OrganLimits[0].V
-                            if (Vlimit.length > 0) {
-                                this.datasets.push({
-                                    label: organ + ' Protocol Limit',
-                                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                                    borderColor: color,
-                                    data: Vlimit,
-                                    showLine: true,
-                                    borderDash: [10,5],
-                                    lineTension: 0
-                                })
-                            }
-                            var MaxDoselimit = OrganLimits[0].MaxDose
-                            if (MaxDoselimit != null) {
-                                this.datasets.push({
-                                        label: organ + ' Max Dose',
-                                        backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                                        borderColor: color,
-                                        data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
-                                        showLine: true,
-                                        borderDash: [10,5],
-                                        lineTension: 0
-                                    })
-                                }
-                            }
-                        }
+                    this.createDatasets(organData);
                     })
                 console.log('acabao',this.datasets)
                 this.createDVH(this.datasets, 'dvh');
