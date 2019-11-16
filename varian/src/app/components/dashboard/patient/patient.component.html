@@ -35,8 +35,8 @@
                 >
         </app-two-dimensional-image>
        <div class="column-imag">
-        <app-checklist></app-checklist>
-        <mat-slider style="margin-top:100px;" *ngIf = "plan != undefined"
+        <app-checklist class="sel"></app-checklist>
+        <mat-slider *ngIf = "plan != undefined"
         vertical
         thumbLabel
         [displayWith]="formatLabel"
