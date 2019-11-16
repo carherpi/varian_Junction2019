@@ -7,6 +7,7 @@ import { Observable, combineLatest } from 'rxjs';
 import StructureColors from './structureColors.js';
 import CriticalOrgans from './criticalOrgans.js';
 import Utils from './utils.js';
+import { isPromise } from 'q';
 
 @Component({
   selector: 'app-histograma',
@@ -135,13 +136,11 @@ createRadarPlot(SMdatasets,elementID) {
 
 extendDataset(DVHdatasets,SMdata,organData,patientId) {
     var organ = organData["Id"];
-    console.log(organ)
     var PatientCriticalOrgansS = CriticalOrgans.filter(function(data){
         return data.patient == patientId
     })
     var PatientCriticalOrgans = PatientCriticalOrgansS[0].organs
     var CriticalOrgansID = PatientCriticalOrgans.map(({ ID }) => ID)
-    console.log(CriticalOrgansID)
     if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
         var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
         curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
@@ -185,11 +184,12 @@ extendDataset(DVHdatasets,SMdata,organData,patientId) {
                     })
                 }
             var Alimit = this.utils.curveArea(Vlimit)
-            console.log(organ,Alimit)
             if (Alimit > 0) {
                 var Acurve = this.utils.curveArea(curve)
                 SMdata.push(
                     {organ: organ, SM: (Alimit-Acurve)/Acurve})
+                var minDist = this.utils.minDistCurves(Vlimit,curve)
+                console.log(organ,Alimit,minDist.dist,minDist.isProtocol)
                 }
             }
         }
