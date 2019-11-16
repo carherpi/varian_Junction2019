@@ -25,25 +25,15 @@ export class SmsComponent implements OnInit {
   }
 
   sendMessage(form) {    
-    var postFields = {
-      from:    "NodeElk",
-      to:      "+34600345916",
-      message: "Bring a sweater it's cold outside!"
+    
+    var options = {
+      phone: "+34600345916",
+      message: this.textMessage
     }
 
-    //const key = new Buffer(this.username + ':' + this.password).toString('base64')
-    const postData = JSON.stringify(postFields)
+    console.log(options)
 
-    const options = {
-      hostname: 'api.46elks.com',
-      path:     '/a1/SMS',
-      method:   'POST',
-      headers:  {
-        //'Authorization': 'Basic ' + key
-      }
-    }
-
-    this.http.post('https://api.46elks.com/a1/sms', { headers: options })
+    this.http.post('https://us-central1-stunning-agency-259219.cloudfunctions.net/Junction2019-Varian', options )
       .subscribe(res => {
         console.log(res)
       })
