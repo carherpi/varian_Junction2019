@@ -34,8 +34,9 @@
                 [value]="value"
                 >
         </app-two-dimensional-image>
-       
-        <mat-slider style="margin-top:40px;" *ngIf = "plan != undefined"
+       <div class="column-imag">
+        <app-checklist></app-checklist>
+        <mat-slider style="margin-top:100px;" *ngIf = "plan != undefined"
         vertical
         thumbLabel
         [displayWith]="formatLabel"
@@ -44,7 +45,8 @@
         max="{{maxValue}}"
         [(ngModel)] = "value">
         </mat-slider>
-
+       </div>
+        
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan"
@@ -52,8 +54,6 @@
                 >
         </app-two-dimensional-image>
 </div>
-
-<app-plan-info></app-plan-info>
 
 
 
