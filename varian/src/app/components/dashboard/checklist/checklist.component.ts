@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChecklistComponent implements OnInit {
 
-toCheck = ['awdsef','bsdfs','sedfac','dwaefraw']
+toCheck = ['asdfs','bsdfs','sedfac','dwaefraw']
 
   constructor() { }
 

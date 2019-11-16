@@ -1,20 +1,54 @@
 
-<div class="patient">
-        <form>
-                <h4>Choose a patient</h4>
-                <mat-form-field>
-                        <mat-label>Patient</mat-label>
-                                <mat-select [(ngModel)]="patient" name="patient">
-                                        <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
-                                                        {{patient}}
-                                        </mat-option>
-                                </mat-select>
-                </mat-form-field>                                
-        </form>
-        <app-patient-info [patient] = "patientInfo"></app-patient-info>
+
+<div class="wrapper">
+
+        <div id="first">
+                <form>
+                        <h4>Choose a patient</h4>
+                        <mat-form-field>
+                                <mat-label>Patient</mat-label>
+                                        <mat-select [(ngModel)]="patient" name="patient">
+                                                <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
+                                                                {{patient}}
+                                                </mat-option>
+                                        </mat-select>
+                        </mat-form-field>                                
+                </form>
+                <app-patient-info [patient] = "patientInfo"></app-patient-info>
+
+                
+        </div>
+        <!--
+        <div id="second">
+                <mat-tab-group>
+                        <mat-tab *ngFor="let p of plans; let i = index" label={{p}}>                 
+                                        <mat-card class="example-card" [(ngModel)]="plan" name="{{p}}">
+                                                        <mat-card-header>
+                                                          <div mat-card-avatar class="example-header-image"></div>
+                                                          <mat-card-title>Plan</mat-card-title>
+                                                          <mat-card-subtitle>{{p}}</mat-card-subtitle>
+                                                        </mat-card-header>
+                                                        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+                                                        <mat-card-content>
+                                                          <p>
+                                                            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+                                                            A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+                                                            bred for hunting.
+                                                          </p>
+                                                        </mat-card-content>
+                                                        <mat-card-actions>
+                                                          <button mat-button>LIKE</button>
+                                                          <button mat-button>SHARE</button>
+                                                        </mat-card-actions>
+                                        </mat-card>
+                        </mat-tab>
+                </mat-tab-group>
+
+        </div>
+        -->
+
 </div>
-        
-        
+
 
 <form>
         <h4>Choose a plan</h4>
@@ -29,6 +63,8 @@
         
 </form>
 <app-plan-info></app-plan-info>
+
+
 
 
 <app-two-dimensional-image
