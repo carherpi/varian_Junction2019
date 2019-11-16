@@ -1,12 +1,12 @@
 <mat-list class="wrapper-row nav-list" *ngIf = "patient != undefined">
-        <mat-list-item style="margin:auto">
-          <mat-icon mat-list-icon>fingerprint</mat-icon>
+        <mat-list-item>
+
           <h4 mat-line>ID</h4>
           <p mat-line> {{patient.Id}} </p>
+
         </mat-list-item>
         <mat-divider></mat-divider>
         <mat-list-item>
-            <mat-icon mat-list-icon>perm_identity</mat-icon>
             <h4 mat-line>FirstName</h4>
             <p mat-line> {{patient.FirstName}} </p>
             </mat-list-item>
