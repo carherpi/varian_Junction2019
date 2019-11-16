@@ -1,6 +1,6 @@
 
-<div class="patient">
-        <form>
+
+<form>
                 <h4>Choose a patient</h4>
                 <mat-form-field>
                         <mat-label>Patient</mat-label>
@@ -12,9 +12,8 @@
                 </mat-form-field>                                
         </form>
         <app-patient-info [patient] = "patientInfo"></app-patient-info>
-</div>
-        
-        
+
+<hr>
 
 <form>
         <h4>Choose a plan</h4>
@@ -28,13 +27,17 @@
         </mat-form-field>
         
 </form>
-<app-plan-info></app-plan-info>
-
 
 <app-two-dimensional-image
         [patient]="patient"
         [plan]="plan">
 </app-two-dimensional-image>
+<app-plan-info></app-plan-info>
+
+
+
+
+
 
 
         
