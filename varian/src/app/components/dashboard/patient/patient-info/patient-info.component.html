@@ -1,0 +1,31 @@
+
+<mat-list *ngIf = "patient != undefined">
+        <h3 mat-subheader>Patient Info</h3>
+        <mat-list-item>
+          <mat-icon mat-list-icon>fingerprint</mat-icon>
+          <h4 mat-line>ID:</h4>
+          <p mat-line> {{patient.Id}} </p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+            <mat-icon mat-list-icon>perm_identity</mat-icon>
+            <h4 mat-line>FirstName:</h4>
+            <p mat-line> {{patient.FirstName}} </p>
+            </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+            <mat-icon mat-list-icon>polymer</mat-icon>
+            <h4 mat-line>MiddleName:</h4>
+            <p mat-line> {{patient.MiddleName}} </p>
+            </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+                <mat-icon mat-list-icon>eco</mat-icon>
+                <h4 mat-line>LastName:</h4>
+                <p mat-line> {{patient.LastName}} </p>
+                </mat-list-item>
+
+</mat-list>
+
+
+

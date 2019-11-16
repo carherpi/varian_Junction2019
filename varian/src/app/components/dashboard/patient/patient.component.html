@@ -1,33 +1,20 @@
-<!--
-<mat-expansion-panel>
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-            Patient
-            </mat-panel-title>
-            <mat-panel-description>
-            Choose a patient
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-selection-list #patientList>
-                <mat-list-option *ngFor="let patient of patients">
-                  {{patient}}
-                </mat-list-option>
-        </mat-selection-list>
-</mat-expansion-panel>
--->
 
-<form>
-        <h4>Choose a patient</h4>
-        <mat-form-field>
-                <mat-label>Patient</mat-label>
-                        <mat-select [(ngModel)]="patient" name="patient">
-                                <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
-                                                {{patient}}
-                                </mat-option>
-                        </mat-select>
-        </mat-form-field>
-        <p> Patient: {{patiendId}} </p>
-</form>
+<div class="patient">
+        <form>
+                <h4>Choose a patient</h4>
+                <mat-form-field>
+                        <mat-label>Patient</mat-label>
+                                <mat-select [(ngModel)]="patient" name="patient">
+                                        <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
+                                                        {{patient}}
+                                        </mat-option>
+                                </mat-select>
+                </mat-form-field>                                
+        </form>
+        <app-patient-info [patient] = "patientInfo"></app-patient-info>
+</div>
+        
+        
 
 <form>
         <h4>Choose a plan</h4>
@@ -39,12 +26,15 @@
                                 </mat-option>
                         </mat-select>
         </mat-form-field>
-        <p> Plan: {{selectedPlan}} </p>
+        
 </form>
+<app-plan-info></app-plan-info>
 
 
 <app-two-dimensional-image
         [patient]="patient"
         [plan]="plan">
 </app-two-dimensional-image>
+
+
         

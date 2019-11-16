@@ -16,6 +16,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChecklistComponent } from './components/dashboard/checklist/checklist.component';
 import { NotesComponent } from './components/dashboard/notes/notes.component';
 import { HistogramaComponent } from './components/dashboard/histograma/histograma.component';
+import { PatientInfoComponent } from './components/dashboard/patient/patient-info/patient-info.component';
+import { PlanInfoComponent } from './components/dashboard/patient/plan-info/plan-info.component';
 
 
 @NgModule({
@@ -29,6 +31,8 @@ import { HistogramaComponent } from './components/dashboard/histograma/histogram
     TwoDimensionalImageComponent,
     NotesComponent,
     HistogramaComponent,
+    PatientInfoComponent,
+    PlanInfoComponent,
   ],
   imports: [
     
