@@ -9,6 +9,9 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 export class PatientComponent implements OnInit {
 
   patients : string[] = [];
+  plans : string[] = [];
+
+  patiendId: string;
 
   constructor(
     private apiService: ApiServiceService,
@@ -25,5 +28,14 @@ export class PatientComponent implements OnInit {
     
   }
 
+  updatePlans() {
+    this.apiService.getPatientPlans(this.patiendId)
+      .subscribe(res => { 
+        this.plans = []
+        for(var i in res) {
+          this.plans.push(res[i]);
+        }       
+    });
+  }
 
 }
