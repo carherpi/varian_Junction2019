@@ -4,8 +4,9 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 import Chart from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
 
-import StructureColors from './structureColors.js'
-import CriticalOrgans from './criticalOrgans.js'
+import StructureColors from './structureColors.js';
+import CriticalOrgans from './criticalOrgans.js';
+import Utils from './utils.js';
 
 @Component({
   selector: 'app-histograma',
@@ -18,7 +19,7 @@ export class HistogramaComponent implements OnInit {
 @Input() patientIdSelected : any;
 @Input() planIdSelected : any
 
-
+utils = new Utils;
 datasets = new Array<Object>();
 dvhChart: any[];
 ppChart: any[];
@@ -132,27 +133,6 @@ createRadarPlot(SMdatasets,elementID) {
     return chart
 }
 
-curveArea(curve) {
-    var start = true;
-    var area = 0;
-    var x_0 = 0;
-    var y_0 = 0;
-    curve.forEach(point => {
-        if (start) {
-            x_0 = point.x;
-            y_0 = point.y;
-            start = false;
-        } else {
-            var dx = point.x - x_0;
-            var dy = point.y - y_0;
-            area = area + dx*point.y -(dx*dy)/2;
-            x_0 = point.x;
-            y_0 = point.y;
-        }
-    })
-    return(area)
-}
-
 extendDataset(DVHdatasets,SMdata,organData,patientId) {
     var organ = organData["Id"];
     console.log(organ)
@@ -204,10 +184,10 @@ extendDataset(DVHdatasets,SMdata,organData,patientId) {
                         lineTension: 0
                     })
                 }
-            var Alimit = this.curveArea(Vlimit)
+            var Alimit = this.utils.curveArea(Vlimit)
             console.log(organ,Alimit)
             if (Alimit > 0) {
-                var Acurve = this.curveArea(curve)
+                var Acurve = this.utils.curveArea(curve)
                 SMdata.push(
                     {organ: organ, SM: (Alimit-Acurve)/Acurve})
                 }
