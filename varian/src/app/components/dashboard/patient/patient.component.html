@@ -1,3 +1,4 @@
+<!--
 <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
@@ -13,3 +14,30 @@
                 </mat-list-option>
         </mat-selection-list>
 </mat-expansion-panel>
+-->
+
+<form>
+        <h4>Choose a patient</h4>
+        <mat-form-field>
+                <mat-label>Patient</mat-label>
+                        <mat-select [(ngModel)]="patiendId" name="patient">
+                                <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
+                                                {{patient}}
+                                </mat-option>
+                        </mat-select>
+        </mat-form-field>
+        <p> Patient: {{patiendId}} </p>
+</form>
+
+<form>
+        <h4>Choose a plan</h4>
+        <mat-form-field>
+                <mat-label>Plan</mat-label>
+                        <mat-select [(ngModel)]="selectedPlan" name="plan">
+                                <mat-option *ngFor="let plan of plans" [(value)]="plan">
+                                                {{plan}}
+                                </mat-option>
+                        </mat-select>
+        </mat-form-field>
+        <p> Plan: {{selectedPlan}} </p>
+</form>
