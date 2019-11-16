@@ -1,27 +1,15 @@
-<mat-grid-list cols="2" rowHeight="3:1">
-
-    <mat-grid-tile>
-        
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                    Patient
-                    </mat-panel-title>
-                    <mat-panel-description>
-                    Choose a patient
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <mat-selection-list #shoes>
-                        <mat-list-option *ngFor="let shoe of typesOfShoes">
-                          {{shoe}}
-                        </mat-list-option>
-                </mat-selection-list>
-            </mat-expansion-panel>
-    </mat-grid-tile>
-
-    <mat-grid-tile>
-        
-        2
-
-    </mat-grid-tile>
-  </mat-grid-list>
+<mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+            Patient
+            </mat-panel-title>
+            <mat-panel-description>
+            Choose a patient
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-selection-list #patientList>
+                <mat-list-option *ngFor="let patient of patients">
+                  {{patient}}
+                </mat-list-option>
+        </mat-selection-list>
+</mat-expansion-panel>

@@ -8,17 +8,22 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 })
 export class PatientComponent implements OnInit {
 
-  typesOfShoes: string[] = [];
+  patients : string[] = [];
 
   constructor(
     private apiService: ApiServiceService,
   ) { }
 
   ngOnInit() {
+
     this.apiService.getPatients()
-      .subscribe(res => {        
-        console.log(res)      
+      .subscribe(res => { 
+        for(var i in res) {
+          this.patients.push(res[i]);
+        }       
     }); 
+    
   }
+
 
 }
