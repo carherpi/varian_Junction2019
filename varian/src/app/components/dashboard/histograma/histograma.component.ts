@@ -6,10 +6,6 @@ declare var Chart : any;
 const patientId = 'Lung';
 const planId = 'JSu-IM107' // Assume is given
 
-const protocols = [
-    {patient: 'Head_Neck', protocol: 'http://www.londoncancer.org/media/84331/london-cancer-head-and-neck-radiotherapy-protocol-march-2013.pdf'},
-]
-
 const StructureColors = [
     {ID: 'Body', Color: 'rgb(255,0,240)'},
     {ID: 'PTV_45', Color: 'rgba(180, 0, 0)'},
@@ -92,12 +88,18 @@ export class HistogramaComponent implements OnInit {
   }
 
   getHistoData(){
-    this.apiService.getDVH(patientId,planId)
-    .subscribe(function (response){
-    var organs = response;
-    this.apiService.getDVHsCurve(patientId, planId,organs)
-    .then(function(results){
-      this.datasets = results;
+    console.log('creating histo')
+    this.apiService.getDVHCurves(patientId,planId)
+    .subscribe((response) => {
+    var organs=Object.values(response)
+    console.log(organs)
+    var promises = [];
+    for (var i = 0; i<organs.length; i++){
+        promises.push(this.apiService.getDVHCurve(patientId,planId,organs[i]))
+    }
+    Promise.all(promises)
+    .then((results)=> {
+      console.log(results)
         results.forEach(response => {
             var organ = response.data.Id;
             console.log(organ)
@@ -143,7 +145,7 @@ export class HistogramaComponent implements OnInit {
             }
         });
     })
-    .finally(function() {
+    .finally(()=> {
         this.createChart(this.datasets)
     })
 })
