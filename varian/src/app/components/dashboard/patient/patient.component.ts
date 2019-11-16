@@ -12,6 +12,7 @@ export class PatientComponent implements OnInit {
 
   patients : string[] = [];
   patient: string;
+  patientInfo: any;
 
   plans : string[] = [];
   plan: string;  
@@ -37,6 +38,11 @@ export class PatientComponent implements OnInit {
   }
 
   updatePlans() {
+
+    this.apiService.getPatient(this.patient)
+      .subscribe(res => { 
+        this.patientInfo = res     
+    }); 
 
     this.apiService.getPatientPlans(this.patient)
       .subscribe(res => { 

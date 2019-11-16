@@ -16,7 +16,6 @@ export class TwoDimensionalImageComponent implements OnInit {
   minValue: any;
   maxValue: any;
 
-  @Input() childMessage: string;
 
   constructor(private apiService: ApiServiceService) { }
 
