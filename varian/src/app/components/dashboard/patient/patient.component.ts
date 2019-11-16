@@ -30,7 +30,7 @@ export class PatientComponent implements OnInit {
 
   ngOnInit() {
     this.apiService.getPatients()
-      .subscribe(res => { 
+      .subscribe(res => {
         for(var i in res) {
           this.patients.push(res[i]);
         }       

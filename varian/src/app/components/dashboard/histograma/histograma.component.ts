@@ -3,6 +3,7 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 
 import Chart from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
+import { isArray } from 'util';
 
 const patientIdSelected = 'Lung';
 const planIdSelected = 'JSu-IM107'
@@ -117,7 +118,7 @@ curveArea(curve) {
     return(area)
 }
 
-extendDataset(DVHdatasets,organData) {
+extendDataset(DVHdatasets,SMdata,organData) {
     var organ = organData["Id"];
     if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
         var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
@@ -161,6 +162,10 @@ extendDataset(DVHdatasets,organData) {
                         lineTension: 0
                     })
                 }
+            var Alimit = this.curveArea(Vlimit)
+            var Acurve = this.curveArea(curve)
+            SMdata.push(
+                {organ: organ, SM: (Alimit-Acurve)/Acurve})
             }
         }
     }
@@ -168,10 +173,12 @@ extendDataset(DVHdatasets,organData) {
 getData(patientId,planId){
     this.apiService.getPatientPlans(patientId)
     .subscribe( planIDs => {
+        var planLength = 0;
         let requestsPlans:Observable<any>[] = [];
-        planIDs.forEach( plan => {
+        Object.values(planIDs).forEach( plan => {
+            planLength = planLength+1;
             requestsPlans.push( this.apiService.getDVHCurves(patientId,plan))
-        });
+        })
         var planDVH = []
         combineLatest(requestsPlans).toPromise()
         .then(responsePlans => {
@@ -184,14 +191,14 @@ getData(patientId,planId){
                 combineLatest(requestsOrgan).toPromise()
                 .then(responseOrgans => {
                     var DVHdatasets = []
+                    var SMdata = [];
                     responseOrgans.forEach( organData => {
-                        this.extendDataset(DVHdatasets,organData);
+                        this.extendDataset(DVHdatasets,SMdata,organData);
                         })
                     planDVH.push({plan: plan, datasets: DVHdatasets});
                     // Plotters
-                    if (planIndex == (planIDs.length-1)){
+                    if (planIndex == (planLength-1)){
                         var planSelected = planDVH.filter(function(dvh){
-                            console.log(dvh)
                             return dvh.plan == planId
                         })
                         var datasetsSelected = planSelected[0].datasets
@@ -200,6 +207,9 @@ getData(patientId,planId){
                     })
                 })
             })
+        // catch {
+        //     console.log('First attempt?')
+        // }
         })
     }
 
