@@ -11,6 +11,8 @@ export class ApiServiceService {
 
   constructor(private http: HttpClient) { }
 
+
+
   getPatients() {     
     return this.http.get(this.baseURL + 'api/patients')
   }

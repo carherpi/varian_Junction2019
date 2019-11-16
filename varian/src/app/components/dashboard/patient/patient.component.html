@@ -20,7 +20,7 @@
         <h4>Choose a patient</h4>
         <mat-form-field>
                 <mat-label>Patient</mat-label>
-                        <mat-select [(ngModel)]="patiendId" name="patient">
+                        <mat-select [(ngModel)]="patient" name="patient">
                                 <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
                                                 {{patient}}
                                 </mat-option>
@@ -33,11 +33,18 @@
         <h4>Choose a plan</h4>
         <mat-form-field>
                 <mat-label>Plan</mat-label>
-                        <mat-select [(ngModel)]="selectedPlan" name="plan">
-                                <mat-option *ngFor="let plan of plans" [(value)]="plan">
+                        <mat-select [(ngModel)]="plan" name="plan">
+                                <mat-option *ngFor="let plan of plans" [(value)]="plan" (click) = getAllImages()>
                                                 {{plan}}
                                 </mat-option>
                         </mat-select>
         </mat-form-field>
         <p> Plan: {{selectedPlan}} </p>
 </form>
+
+
+<app-two-dimensional-image
+        [patient]="patient"
+        [plan]="plan">
+</app-two-dimensional-image>
+        

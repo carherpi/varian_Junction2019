@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,  Input } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 import { MatSliderChange } from '@angular/material';
 
@@ -9,23 +9,29 @@ import { MatSliderChange } from '@angular/material';
 })
 export class TwoDimensionalImageComponent implements OnInit {
 
-  patient: any
-  plan: any
+  @Input() patient: any
+  @Input() plan: any
   value: any 
 
   minValue: any;
   maxValue: any;
 
+  @Input() childMessage: string;
+
   constructor(private apiService: ApiServiceService) { }
 
   ngOnInit() {
 
+    /*
     this.patient = 'Head_Neck'
     this.plan = 'JSu-IM101'
-    this.value = '40'
-
+    */
+    this.value = '1'
     this.minValue = '1'
     this.maxValue = '100'
+    console.log("data:")
+    console.log(this.patient)
+    console.log(this.plan)
 
   }
 

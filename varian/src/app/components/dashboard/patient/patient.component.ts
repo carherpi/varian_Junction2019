@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 
+import { HttpClient } from '@angular/common/http';
+
 @Component({
   selector: 'app-patient',
   templateUrl: './patient.component.html',
@@ -9,15 +11,21 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 export class PatientComponent implements OnInit {
 
   patients : string[] = [];
-  plans : string[] = [];
+  patient: string;
 
-  patiendId: string;
+  plans : string[] = [];
+  plan: string;  
+
+  rederedBitmaps: any[];
+  
 
   constructor(
     private apiService: ApiServiceService,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
+
 
     this.apiService.getPatients()
       .subscribe(res => { 
@@ -29,13 +37,30 @@ export class PatientComponent implements OnInit {
   }
 
   updatePlans() {
-    this.apiService.getPatientPlans(this.patiendId)
+
+    this.apiService.getPatientPlans(this.patient)
       .subscribe(res => { 
         this.plans = []
         for(var i in res) {
           this.plans.push(res[i]);
         }       
     });
+  }
+
+  getAllImages() {
+    /*
+    this.rederedBitmaps = []
+
+    var baseURL = 'https://junction-planreview.azurewebsites.net/'
+
+    while (true) {
+      this.http.get(baseURL + 'api/patients/{{patient}}/plans/{{plan}}/RenderedBitmaps/{{value}}')
+        .subscribe(res => { 
+          this.rederedBitmaps.push(res);   
+      });
+    }
+    */
+ 
   }
 
 }
