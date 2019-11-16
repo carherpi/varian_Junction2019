@@ -64,6 +64,7 @@ const CriticalOrgansID = CriticalOrgans.map(({ ID }) => ID)
 
 export class HistogramaComponent implements OnInit {
 
+
 datasets = new Array<Object>();
 
 constructor(private apiService: ApiServiceService) { }
@@ -74,7 +75,6 @@ ngOnInit() {
   }
 
 createDVH(datasets, elementID) {
-    console.log('Dataset: ',datasets.toString())
     var canvas = document.getElementById(elementID)
     var ctx = canvas
     var chart = new Chart(ctx, {
@@ -119,7 +119,7 @@ curveArea(curve) {
     return(area)
 }
 
-createDatasets(organData) {
+extendDataset(DVHdatasets,organData) {
     var organ = organData["Id"];
     if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
         var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
@@ -128,7 +128,7 @@ createDatasets(organData) {
             return structure.ID == organ
         })
         var color = color2[0].Color
-        this.datasets.push({
+        DVHdatasets.push({
             label: organ,
             backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
             borderColor: color,
@@ -136,13 +136,12 @@ createDatasets(organData) {
             showLine: true,
         })
         if (CriticalOrgansID.includes(organ)) {
-            console.log('hola')
             var OrganLimits = CriticalOrgans.filter(function(structure){
                 return structure.ID == organ
             })
             var Vlimit = OrganLimits[0].V
             if (Vlimit.length > 0) {
-                this.datasets.push({
+                DVHdatasets.push({
                     label: organ + ' Protocol Limit',
                     backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
                     borderColor: color,
@@ -154,7 +153,7 @@ createDatasets(organData) {
             }
             var MaxDoselimit = OrganLimits[0].MaxDose
             if (MaxDoselimit != null) {
-                this.datasets.push({
+                DVHdatasets.push({
                         label: organ + ' Max Dose',
                         backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
                         borderColor: color,
@@ -166,32 +165,56 @@ createDatasets(organData) {
                 }
             }
         }
-}
+    }
 
 getData(patientId,planId){
-    this.apiService.getPatientPlans(patientIdSelected)
+    this.apiService.getPatientPlans(patientId)
     .subscribe( planIDs => {
         let requestsPlans:Observable<any>[] = [];
-        planIDs.forEach( planID => {
-            requestsPlans.push( this.apiService.getDVHCurves(patientId,planId))
+        planIDs.forEach( plan => {
+            requestsPlans.push( this.apiService.getDVHCurves(patientId,plan))
         });
-    })
-    this.apiService.getDVHCurves(patientId,planId)
-    .subscribe(res => {
-        var organs = Object.values(res)
-        let requestsOrgan:Observable<any>[] = [];
-        organs.forEach( organ => {
-            requestsOrgan.push(this.apiService.getDVHCurve(patientId,planId,organ))
-        });
-        combineLatest(requestsOrgan).toPromise()
-            .then(responseOrgans => {
-                responseOrgans.forEach( organData => {
-                    this.createDatasets(organData);
+        var planDVH = []
+        combineLatest(requestsPlans).toPromise()
+        .then(responsePlans => {
+            responsePlans.forEach( (organs, planIndex) => {
+                var plan = planIDs[planIndex]
+                let requestsOrgan:Observable<any>[] = [];
+                organs.forEach( organ => {
+                    requestsOrgan.push(this.apiService.getDVHCurve(patientId,plan,organ))
+                });
+                combineLatest(requestsOrgan).toPromise()
+                .then(responseOrgans => {
+                    var DVHdatasets = []
+                    responseOrgans.forEach( organData => {
+                        this.extendDataset(DVHdatasets,organData);
+                        })
+                    planDVH.push({plan: plan, datasets: DVHdatasets});
+                    // this.createDVH(this.datasets, 'dvh');
                     })
-                console.log('acabao',this.datasets)
-                this.createDVH(this.datasets, 'dvh');
                 })
-    })
-}
+            })
+        // Plotters
+        console.log('hola',planDVH)
+        for (var i = 0; i < planDVH.length; i++){
+            console.log(i)
+        }
+        planDVH.forEach( dvh => {
+            console.log(dvh)
+        })
+        // var selectedDataset = planDVH.filter(function(dvh){
+        //     console.log(dvh)
+        //     console.log('dvh')
+        //     return dvh.plan == planId
+        // })
+        // console.log(selectedDataset)
+        // selectedDataset = selectedDataset[0].dataset
+        // console.log(selectedDataset)
+        // this.createDVH(selectedDataset, 'dvh');
+        // console.log(planDVH)
+        })
+    }
+
+
 }
 
