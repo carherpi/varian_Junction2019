@@ -4,5 +4,13 @@
 // Import angular icons
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
+// Color palette
+$my-app-primary: mat-palette($mat-red, 400);
+$my-app-accent:  mat-palette($mat-blue, 900);
+$my-app-warn:    mat-palette($mat-yellow);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+@include angular-material-theme($my-app-theme);
+
+
 $custom-typography: mat-typography-config($font-family: '"Arial", roboto;');
 @include mat-core($custom-typography);

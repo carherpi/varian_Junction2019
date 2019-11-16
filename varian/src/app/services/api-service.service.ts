@@ -14,4 +14,10 @@ export class ApiServiceService {
   getPatients() {     
     return this.http.get(this.baseURL + 'api/patients')
   }
+
+  getImageUrl(value) {  
+    var paciente = 'Head_Neck'   
+    var plan = 'JSu-IM101'
+    return this.baseURL + '/api/patients/' + paciente + '/plans/' + plan + '/RenderedBitmaps/' + value
+  }
 }

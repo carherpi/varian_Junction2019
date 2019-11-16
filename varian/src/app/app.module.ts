@@ -12,6 +12,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
 import { PatientComponent } from './components/dashboard/patient/patient.component';
 import { HttpClientModule } from '@angular/common/http';
+import { TwoDimensionalImageComponent } from './components/dashboard/two-dimensional-image/two-dimensional-image.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -22,14 +24,17 @@ import { HttpClientModule } from '@angular/common/http';
     DashboardComponent,
     NavbarComponent,
     PatientComponent,
+    TwoDimensionalImageComponent,
   ],
   imports: [
-    BrowserModule,
+    
     AppRoutingModule,
     MaterialModule,
+    BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
