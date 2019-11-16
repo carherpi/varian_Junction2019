@@ -14,14 +14,14 @@
         
         <div>
             <mat-form-field appearance="outline">
-                <textarea matInput placeholder="Write your message..."></textarea>
+                <textarea matInput name="text" [(ngModel)]="textMessage" placeholder="Write your message..."></textarea>
             </mat-form-field>
         </div>
         
         <br>  
         
         <div>
-          <button mat-stroked-button (click)="loginSubmit(loginForm)">Log In</button>
+          <button mat-stroked-button (click)="sendMessage(loginForm)">Log In</button>
         </div> 
       
         <br>
