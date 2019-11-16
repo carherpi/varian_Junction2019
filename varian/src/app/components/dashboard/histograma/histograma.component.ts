@@ -46,6 +46,10 @@ const CriticalOrgans = [
 ]
 const CriticalOrgansID = CriticalOrgans.map(({ ID }) => ID)
 
+
+
+let datasets = new Array<Object>();
+
 @Component({
   selector: 'app-histograma',
   templateUrl: './histograma.component.html',
@@ -54,15 +58,17 @@ const CriticalOrgansID = CriticalOrgans.map(({ ID }) => ID)
 
 export class HistogramaComponent implements OnInit {
 
-  datasets;
+
 
   constructor(private apiService: ApiServiceService) { }
 
   ngOnInit() {
-    this.getHistoData()
+    this.getHistoData();
+    this.createChart();
   }
 
-  createChart(datasets) {
+  createChart() {
+    console.log('Dataset: '+datasets.toString())
     var canvas = <HTMLCanvasElement> document.getElementById("dvh");
     var ctx = canvas.getContext("2d");
     var chart = new Chart(ctx, {
@@ -88,30 +94,23 @@ export class HistogramaComponent implements OnInit {
   }
 
   getHistoData(){
-    console.log('creating histo')
     this.apiService.getDVHCurves(patientId,planId)
     .subscribe((response) => {
     var organs=Object.values(response)
-    console.log(organs)
-    var promises = [];
     for (var i = 0; i<organs.length; i++){
-        promises.push(this.apiService.getDVHCurve(patientId,planId,organs[i]))
-    }
-    Promise.all(promises)
-    .then((results)=> {
-      console.log(results)
-        results.forEach(response => {
-            var organ = response.data.Id;
+        this.apiService.getDVHCurve(patientId,planId,organs[i])
+        .subscribe((response)=>{
+            var organ = response["Id"];
             console.log(organ)
             if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
-                var curve = response.data.CurvePoints.map(({Volume: y, ...rest})=>({y, ...rest}));
+                var curve = response["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
                 curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
                 var color2 = StructureColors.filter(function(structure){
                     return structure.ID == organ
                 })
                 var color = color2[0].Color
-                this.datasets = this.datasets.concat([{
-                    label: response.data.Id,
+                datasets.concat([{
+                    label: response["Id"],
                     backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
                     borderColor: color,
                     data: curve,
@@ -123,8 +122,8 @@ export class HistogramaComponent implements OnInit {
                     })
                     var Vlimit = OrganLimits[0].V
                     if (Vlimit.length > 0) {
-                        this.datasets = this.datasets.concat([{
-                            label: response.data.Id + ' Protocol Limit',
+                        datasets.concat([{
+                            label: response["Id"] + ' Protocol Limit',
                             backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
                             borderColor: color,
                             data: Vlimit,
@@ -133,8 +132,8 @@ export class HistogramaComponent implements OnInit {
                     }
                     var MaxDoselimit = OrganLimits[0].MaxDose
                     if (MaxDoselimit != null) {
-                        this.datasets = this.datasets.concat([{
-                            label: response.data.Id + ' Max Dose',
+                      datasets.concat([{
+                            label: response["Id"] + ' Max Dose',
                             backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
                             borderColor: color,
                             data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
@@ -143,13 +142,10 @@ export class HistogramaComponent implements OnInit {
                     }
                 }
             }
-        });
+        })
+      }
     })
-    .finally(()=> {
-        this.createChart(this.datasets)
-    })
-})
-}
 
+}
 }
 
