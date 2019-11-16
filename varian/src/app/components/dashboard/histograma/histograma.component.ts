@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 
+import Chart from 'chart.js';
+
 declare var Chart : any;
 
 const patientId = 'Lung';
@@ -48,7 +50,7 @@ const CriticalOrgansID = CriticalOrgans.map(({ ID }) => ID)
 
 
 
-let datasets = new Array<Object>();
+
 
 @Component({
   selector: 'app-histograma',
@@ -58,26 +60,28 @@ let datasets = new Array<Object>();
 
 export class HistogramaComponent implements OnInit {
 
-
+  datasets = new Array<Object>();
 
   constructor(private apiService: ApiServiceService) { }
 
   ngOnInit() {
+    console.log("Crtitial organs id",CriticalOrgansID)
     this.getHistoData();
     this.createChart();
   }
 
   createChart() {
-    console.log('Dataset: '+datasets.toString())
-    var canvas = <HTMLCanvasElement> document.getElementById("dvh");
-    var ctx = canvas.getContext("2d");
+    console.log('Dataset: '+this.datasets.toString())
+    var canvas = document.getElementById('dvh')
+    var ctx = canvas
+
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'scatter',
     
         // The data for our dataset
         data: {
-            datasets: datasets
+            datasets: this.datasets
         },
         // Configuration options go here
         options: {
@@ -95,55 +99,57 @@ export class HistogramaComponent implements OnInit {
 
   getHistoData(){
     this.apiService.getDVHCurves(patientId,planId)
-    .subscribe((response) => {
-    var organs=Object.values(response)
-    for (var i = 0; i<organs.length; i++){
-        this.apiService.getDVHCurve(patientId,planId,organs[i])
-        .subscribe((response)=>{
-            var organ = response["Id"];
-            console.log(organ)
-            if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
-                var curve = response["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
-                curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
-                var color2 = StructureColors.filter(function(structure){
-                    return structure.ID == organ
+    .subscribe(res => {
+        var organs=Object.values(res)
+        console.log("Organos", organs)
+        for (var i = 0; i<organs.length; i++){
+            this.apiService.getDVHCurve(patientId,planId,organs[i])
+                .subscribe(response=>{
+                    console.log(response)
+                    var organ = response["Id"];
+                    console.log(organ)
+                    if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
+                        var curve = response["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
+                        curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
+                        var color2 = StructureColors.filter(function(structure){
+                            return structure.ID == organ
+                        })
+                        var color = color2[0].Color
+                        this.datasets.concat([{
+                            label: response["Id"],
+                            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                            borderColor: color,
+                            data: curve,
+                            showLine: true,
+                        }])
+                        if (CriticalOrgansID.includes(organ)) {
+                            var OrganLimits = CriticalOrgans.filter(function(structure){
+                                return structure.ID == organ
+                            })
+                            var Vlimit = OrganLimits[0].V
+                            if (Vlimit.length > 0) {
+                                this.datasets.concat([{
+                                    label: response["Id"] + ' Protocol Limit',
+                                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                                    borderColor: color,
+                                    data: Vlimit,
+                                    showLine: true,
+                                }])
+                            }
+                            var MaxDoselimit = OrganLimits[0].MaxDose
+                            if (MaxDoselimit != null) {
+                            this.datasets.concat([{
+                                    label: response["Id"] + ' Max Dose',
+                                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                                    borderColor: color,
+                                    data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
+                                    showLine: true,
+                                }])
+                            }
+                        }
+                    }
                 })
-                var color = color2[0].Color
-                datasets.concat([{
-                    label: response["Id"],
-                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                    borderColor: color,
-                    data: curve,
-                    showLine: true,
-                }])
-                if (CriticalOrgansID.includes(organ)) {
-                    var OrganLimits = CriticalOrgans.filter(function(structure){
-                        return structure.ID == organ
-                    })
-                    var Vlimit = OrganLimits[0].V
-                    if (Vlimit.length > 0) {
-                        datasets.concat([{
-                            label: response["Id"] + ' Protocol Limit',
-                            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                            borderColor: color,
-                            data: Vlimit,
-                            showLine: true,
-                        }])
-                    }
-                    var MaxDoselimit = OrganLimits[0].MaxDose
-                    if (MaxDoselimit != null) {
-                      datasets.concat([{
-                            label: response["Id"] + ' Max Dose',
-                            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                            borderColor: color,
-                            data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
-                            showLine: true,
-                        }])
-                    }
-                }
-            }
-        })
-      }
+        }
     })
 
 }
