@@ -13,18 +13,16 @@
         </form>
         <app-patient-info style="width:100%" [patient] = "patientInfo"></app-patient-info>   
         </div>
-<form>
-        <mat-form-field>
-                <mat-label>Plan</mat-label>
-                        <mat-select [(ngModel)]="plan" name="plan">
-                                <mat-option *ngFor="let plan of plans" [(value)]="plan" (click) = getAllImages()>
-                                                {{plan}}
-                                </mat-option>
-                        </mat-select>
-        </mat-form-field>
-        
-</form>
-
+        <form>
+                <mat-form-field>
+                        <mat-label>Plan</mat-label>
+                                <mat-select [(ngModel)]="plan" name="plan">
+                                        <mat-option *ngFor="let plan of plans" [(value)]="plan" (click) = getAllImages()>
+                                                        {{plan}}
+                                        </mat-option>
+                                </mat-select>
+                </mat-form-field>
+        </form>
 </div>
 
 <div class="wrapper-row imagesPatientWrapper">
@@ -34,7 +32,7 @@
                 [value]="value"
                 >
         </app-two-dimensional-image>
-       <div class="column-imag">
+        <div class="column-imag">
         <app-checklist></app-checklist>
         <mat-slider style="margin-top:100px;" *ngIf = "plan != undefined"
         vertical
@@ -45,7 +43,7 @@
         max="{{maxValue}}"
         [(ngModel)] = "value">
         </mat-slider>
-       </div>
+        </div>
         
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"

@@ -46,7 +46,7 @@ import { SmsComponent } from './components/dashboard/sms/sms.component';
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [PatientComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
