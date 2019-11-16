@@ -65,20 +65,35 @@ export class HistogramaComponent implements OnInit {
 
 
 datasets = new Array<Object>();
+dvhChart: any[];
+ppChart: any[];
+radarChart: any[];
+
 
 constructor(
     private apiService: ApiServiceService,
-    private patientComponent: PatientComponent
     ) { }
 
 ngOnInit() {
-    this.getData(this.patientIdSelected, this.planIdSelected);
-    this.createDVH(this.datasets, 'dvh');
+    if ((typeof this.patientIdSelected != "undefined") 
+        && (typeof this.planIdSelected != "undefined")) {
+            this.getData(this.patientIdSelected, this.planIdSelected);
+            this.createDVH(this.datasets, 'dvh');
+        } else {
+            if (typeof this.dvhChart != "undefined") {
+                this.dvhChart.destroy();
+            }
+            if (typeof this.ppChart != "undefined") {
+                this.ppChart.destroy();
+            }
+            if (typeof this.dvhChart != "undefined") {
+                this.radarChart.destroy();
+            }
+        }
   }
 
 ngOnChanges(changes) {
-    this.getData(this.patientIdSelected, this.planIdSelected);
-    this.createDVH(this.datasets, 'dvh');
+    this.ngOnInit()
 }
 
 createDVH(datasets, elementID) {
@@ -103,12 +118,12 @@ createDVH(datasets, elementID) {
             }
         }
     });
+    return chart
 }
 
 createParallelPlot(SMdatasets,elementID) {
     let plans = SMdatasets.map(({plan}) => plan);
     var datasets = this.planData2organData(SMdatasets)
-    console.log(datasets)
     var ctx = document.getElementById(elementID).getContext('2d');
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -131,12 +146,12 @@ createParallelPlot(SMdatasets,elementID) {
             }
         }
     });
+    return chart
 }
 
 createRadarPlot(SMdatasets,elementID) {
     let plans = SMdatasets.map(({plan}) => plan);
     var datasets = this.planData2organData(SMdatasets)
-    console.log(datasets)
     var ctx = document.getElementById(elementID).getContext('2d');
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -159,6 +174,7 @@ createRadarPlot(SMdatasets,elementID) {
         //     }
         // }
     });
+    return chart
 }
 
 curveArea(curve) {
@@ -235,7 +251,6 @@ extendDataset(DVHdatasets,SMdata,organData) {
     }
 
 planData2organData(DataIN) {
-    console.log(DataIN)
     var SM_data = {}
     DataIN.forEach((plan, planIndex) => {
         var planData = plan.data
@@ -267,10 +282,8 @@ planData2organData(DataIN) {
 }
 
 getData(patientId,planId){
-    console.log(patientId)
     this.apiService.getPatientPlans(patientId)
     .subscribe( planIDs => {
-        console.log(planIDs)
         var planLength = 0;
         var plans = Object.values(planIDs)
         let requestsPlans:Observable<any>[] = [];
@@ -303,9 +316,9 @@ getData(patientId,planId){
                             return dvh.plan == planId
                         })
                         var datasetsSelected = planSelected[0].datasets
-                        this.createDVH(datasetsSelected, 'dvh');
-                        this.createParallelPlot(SMdatasets,'pp');
-                        this.createRadarPlot(SMdatasets,'radar');
+                        this.dvhChart = this.createDVH(datasetsSelected, 'dvh');
+                        this.ppChart = this.createParallelPlot(SMdatasets,'pp');
+                        this.radarChart = this.createRadarPlot(SMdatasets,'radar');
                     }
                     })
                 })

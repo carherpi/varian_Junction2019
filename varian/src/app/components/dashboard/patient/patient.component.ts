@@ -39,6 +39,7 @@ export class PatientComponent implements OnInit {
   }
 
   updatePlans() {
+    delete this.plan;
     this.apiService.getPatient(this.patient)
       .subscribe(res => { 
         this.patientInfo = res     
