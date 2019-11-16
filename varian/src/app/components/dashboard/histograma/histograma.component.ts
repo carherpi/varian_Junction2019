@@ -3,10 +3,11 @@ import { ApiServiceService } from 'src/app/services/api-service.service';
 
 import Chart from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
-import { isArray } from 'util';
 
-const patientIdSelected = 'Lung';
-const planIdSelected = 'JSu-IM107'
+import { PatientComponent } from '../patient/patient.component'
+
+// const patientIdSelected = 'Lung';
+const planIdSelected = 'JSu-IM101'
 
 const StructureColors = [
     {ID: 'Body', Color: 'rgb(255,0,240)'},
@@ -66,10 +67,13 @@ export class HistogramaComponent implements OnInit {
 
 datasets = new Array<Object>();
 
-constructor(private apiService: ApiServiceService) { }
+constructor(
+    private apiService: ApiServiceService,
+    private patientComponent: PatientComponent
+    ) { }
 
 ngOnInit() {
-    this.getData(patientIdSelected,planIdSelected);
+    this.getData(this.patientComponent.patient,planIdSelected);
     this.createDVH(this.datasets, 'dvh');
   }
 
@@ -94,6 +98,62 @@ createDVH(datasets, elementID) {
                 }]
             }
         }
+    });
+}
+
+createParallelPlot(SMdatasets,elementID) {
+    let plans = SMdatasets.map(({plan}) => plan);
+    var datasets = this.planData2organData(SMdatasets)
+    console.log(datasets)
+    var ctx = document.getElementById(elementID).getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+        
+        // The data for our dataset
+        data: {
+            labels: plans,
+            datasets: datasets
+        },
+        // Configuration options go here
+        options: {
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Security Margin %'
+                    }
+                }]
+            }
+        }
+    });
+}
+
+createRadarPlot(SMdatasets,elementID) {
+    let plans = SMdatasets.map(({plan}) => plan);
+    var datasets = this.planData2organData(SMdatasets)
+    console.log(datasets)
+    var ctx = document.getElementById(elementID).getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'radar',
+        
+        // The data for our dataset
+        data: {
+            labels: plans,
+            datasets: datasets
+        },
+        // Configuration options go here
+        // options: {
+        //     scales: {
+        //         yAxes: [{
+        //             scaleLabel: {
+        //                 display: true,
+        //                 labelString: 'Security Margin %'
+        //             }
+        //         }]
+        //     }
+        // }
     });
 }
 
@@ -170,16 +230,52 @@ extendDataset(DVHdatasets,SMdata,organData) {
         }
     }
 
+planData2organData(DataIN) {
+    console.log(DataIN)
+    var SM_data = {}
+    DataIN.forEach((plan, planIndex) => {
+        var planData = plan.data
+        let organs = planData.map(({organ}) => organ);
+        let SM_organ = planData.map(({SM}) => SM);
+        if (planIndex) {
+            organs.forEach((organ, i) => SM_data[organ] = SM_data[organ].concat(SM_organ[i]));
+        } else {
+            organs.forEach((organ, i) => SM_data[organ] = [SM_organ[i]]);
+        }
+    })
+    var datasets = [];
+    var organs = Object.keys(SM_data)
+    Object.values(SM_data).forEach((data,i) =>{
+        var color2 = StructureColors.filter(function(structure){
+            return structure.ID == organs[i]
+        })
+        var color = color2[0].Color
+        datasets = datasets.concat([{
+            label: organs[i],
+            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+            borderColor: color,
+            data: data,
+            showLine: true,
+            lineTension: 0
+        }])
+    })
+    return datasets
+}
+
 getData(patientId,planId){
+    console.log(patientId)
     this.apiService.getPatientPlans(patientId)
     .subscribe( planIDs => {
+        console.log(planIDs)
         var planLength = 0;
+        var plans = Object.values(planIDs)
         let requestsPlans:Observable<any>[] = [];
-        Object.values(planIDs).forEach( plan => {
+        plans.forEach( plan => {
             planLength = planLength+1;
             requestsPlans.push( this.apiService.getDVHCurves(patientId,plan))
         })
         var planDVH = []
+        var SMdatasets = [];
         combineLatest(requestsPlans).toPromise()
         .then(responsePlans => {
             responsePlans.forEach( (organs, planIndex) => {
@@ -196,6 +292,7 @@ getData(patientId,planId){
                         this.extendDataset(DVHdatasets,SMdata,organData);
                         })
                     planDVH.push({plan: plan, datasets: DVHdatasets});
+                    SMdatasets.push({plan: plans[planIndex], data: SMdata});
                     // Plotters
                     if (planIndex == (planLength-1)){
                         var planSelected = planDVH.filter(function(dvh){
@@ -203,13 +300,12 @@ getData(patientId,planId){
                         })
                         var datasetsSelected = planSelected[0].datasets
                         this.createDVH(datasetsSelected, 'dvh');
+                        this.createParallelPlot(SMdatasets,'pp');
+                        this.createRadarPlot(SMdatasets,'radar');
                     }
                     })
                 })
             })
-        // catch {
-        //     console.log('First attempt?')
-        // }
         })
     }
 

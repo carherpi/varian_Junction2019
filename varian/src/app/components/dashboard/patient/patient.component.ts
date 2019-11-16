@@ -39,12 +39,10 @@ export class PatientComponent implements OnInit {
   }
 
   updatePlans() {
-
     this.apiService.getPatient(this.patient)
       .subscribe(res => { 
         this.patientInfo = res     
     }); 
-
     this.apiService.getPatientPlans(this.patient)
       .subscribe(res => { 
         this.plans = []
@@ -53,6 +51,7 @@ export class PatientComponent implements OnInit {
         }       
     });
   }
+
 
   getAllImages() {
     /*

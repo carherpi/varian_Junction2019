@@ -44,7 +44,7 @@ import { PlanInfoComponent } from './components/dashboard/patient/plan-info/plan
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [PatientComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
