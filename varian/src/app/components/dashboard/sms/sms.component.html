@@ -1,0 +1,30 @@
+<app-navbar></app-navbar>
+
+<form #loginForm="ngForm" style="width: 25%;">
+        <p style="font-size: 1.5em;">
+            <b>Introduce necessary data</b>
+        </p>
+        <br>  
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Destination:</mat-label>
+                <input matInput name="text" [(ngModel)]="number" placeholder="Number">    
+          </mat-form-field>
+        </div>
+        
+        <div>
+            <mat-form-field appearance="outline">
+                <textarea matInput name="text" [(ngModel)]="textMessage" placeholder="Write your message..."></textarea>
+            </mat-form-field>
+        </div>
+        
+        <br>  
+        
+        <div>
+          <button mat-stroked-button (click)="sendMessage(loginForm)">Log In</button>
+        </div> 
+      
+        <br>
+      
+        
+      </form>

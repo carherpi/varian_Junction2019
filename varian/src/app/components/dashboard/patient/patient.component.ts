@@ -30,7 +30,7 @@ export class PatientComponent implements OnInit {
 
   ngOnInit() {
     this.apiService.getPatients()
-      .subscribe(res => { 
+      .subscribe(res => {
         for(var i in res) {
           this.patients.push(res[i]);
         }       
@@ -39,12 +39,11 @@ export class PatientComponent implements OnInit {
   }
 
   updatePlans() {
-
+    delete this.plan;
     this.apiService.getPatient(this.patient)
       .subscribe(res => { 
         this.patientInfo = res     
     }); 
-
     this.apiService.getPatientPlans(this.patient)
       .subscribe(res => { 
         this.plans = []
@@ -53,6 +52,7 @@ export class PatientComponent implements OnInit {
         }       
     });
   }
+
 
   getAllImages() {
     /*
