@@ -288,7 +288,7 @@ planData2organData(DataIN) {
     })
     var datasets = [];
     var organs = Object.keys(SM_data)
-    Object.values(SM_data).forEach((data,i) =>{
+    Object.values(SM_data).forEach((data: Array<any>,i) =>{
         var color2 = StructureColors.filter(function(structure){
             return structure.ID == organs[i]
         })
