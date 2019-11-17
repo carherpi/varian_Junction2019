@@ -71,10 +71,7 @@ createDVH(datasets, elementID) {
 createParallelPlot(SMdatasets,elementID) {
     let plans = SMdatasets.map(({plan}) => plan);
     var datasets = this.planData2organData(SMdatasets)
-<<<<<<< HEAD
-=======
     console.log('neetd',datasets)
->>>>>>> 6c65835c3e1a5b36f3c92cea1bdaf76d5d48d0cb
     var ctx = document.getElementById(elementID)
     var chart = new Chart(ctx, {
         // The type of chart we want to create
