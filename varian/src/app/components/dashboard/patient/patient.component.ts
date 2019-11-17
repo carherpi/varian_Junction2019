@@ -18,6 +18,9 @@ export class PatientComponent implements OnInit {
   plan: string; 
   planInfo: any; 
 
+  plans2 : string[] = [];
+  plan2: string;
+
   value:any;
 
   rederedBitmaps: any[];
@@ -49,6 +52,11 @@ export class PatientComponent implements OnInit {
         this.plans = []
         for(var i in res) {
           this.plans.push(res[i]);
+        }
+        this.plans2 = []
+        this.plans2.push("PERTURBED")
+        for(var i in res) {
+          this.plans2.push(res[i]);
         }       
     });
   }
