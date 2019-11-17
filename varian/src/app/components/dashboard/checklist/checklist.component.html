@@ -6,7 +6,5 @@
         <h4>Dose</h4>
         <mat-list-option *ngFor="let item of toCheck2">{{item}}</mat-list-option>
 </mat-selection-list>
-<mat-selection-list style="sel1">
-        <h4>Notes</h4>
-        <mat-list-item *ngFor="let not of notes">{{item}}</mat-list-item>
-</mat-selection-list>
+
+<button style="color = white;" mat-flat-button color="primary" (click)="openDialog()">Send SMS Message </button>
