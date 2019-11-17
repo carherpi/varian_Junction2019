@@ -35,7 +35,6 @@ constructor(
 ngOnInit() {
     if ( typeof this.patientIdSelected != "undefined" ) {
             this.getData(this.patientIdSelected, this.planIdSelected);
-            this.createDVH(this.datasets, 'dvh');
         }
   }
 
@@ -59,9 +58,28 @@ createDVH(datasets, elementID) {
                 yAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Volume %'
+                        labelString: 'Volume (%)',
+                        fontSize: 16
+                    },
+                    ticks: {
+                        fontSize: 16
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Dose (Gy)',
+                        fontSize: 16
+                    },
+                    ticks: {
+                        fontSize: 16
                     }
                 }]
+            },
+            title: {
+                display: true,
+                text: 'DVH',
+                fontSize: 16
             }
         }
     });
@@ -75,7 +93,6 @@ createParallelPlot(SMdatasets,elementID) {
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'line',
-        
         // The data for our dataset
         data: {
             labels: plans,
@@ -87,9 +104,23 @@ createParallelPlot(SMdatasets,elementID) {
                 yAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Security Margin %'
+                        labelString: 'Minimum Distance (-)',
+                        fontSize: 16
+                    },
+                    ticks: {
+                        fontSize: 16
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 16
                     }
                 }]
+            },
+            title: {
+                display: true,
+                text: 'Minimum Distance between DVH and protocols',
+                fontSize: 16
             }
         }
     });
@@ -119,6 +150,11 @@ createRadarPlot(SMdatasets,elementID) {
                     fontSize: 16,
                     labelString: 'Security Margin %'
                 }
+            },
+            title: {
+                display: true,
+                text: 'Area Integral between protocol limits and DVH',
+                fontSize: 16
             }
         }
     });
@@ -132,57 +168,62 @@ extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
     })
     var PatientCriticalOrgans = PatientCriticalOrgansS[0].organs
     var CriticalOrgansID = PatientCriticalOrgans.map(({ ID }) => ID)
-    if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
+    if (CriticalOrgansID.includes(organ)){
+        var isTarget = organ.includes('PTV')
         var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
         curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
         var color2 = StructureColors.filter(function(structure){
             return structure.ID == organ
         })
         var color = color2[0].Color
+        var OrganLimits = PatientCriticalOrgans.filter(function(structure){
+            return structure.ID == organ
+        })
+        var Vlimit = OrganLimits[0].V
+        var MaxDoselimit = OrganLimits[0].MaxDose
+        var Alimit = this.utils.curveArea(Vlimit)
+        if (Alimit > 0) {
+            if (!isTarget) {
+                var Acurve = this.utils.curveArea(curve)
+                SMAreaData.push(
+                    {organ: organ, SM: (Alimit-Acurve)/Acurve})
+            }
+            var minDist = this.utils.minDistCurves(Vlimit,curve)
+            SMDistData.push(
+                {organ: organ, SM: minDist.dist, isProtocol:minDist.isProtocol})
+            }
         DVHdatasets.push({
             label: organ,
             backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
             borderColor: color,
             data: curve,
             showLine: true,
+            hidden: ((Alimit > 0) ? true : false)
         })
-        if (CriticalOrgansID.includes(organ)) {
-            var OrganLimits = PatientCriticalOrgans.filter(function(structure){
-                return structure.ID == organ
-            })
-            var Vlimit = OrganLimits[0].V
-            if (Vlimit.length > 0) {
-                DVHdatasets.push({
-                    label: organ + ' Protocol Limit',
-                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                    borderColor: color,
-                    data: Vlimit,
-                    showLine: true,
-                    borderDash: [10],
-                    lineTension: 0
+        if (MaxDoselimit != null) {
+            DVHdatasets.push({
+                label: organ + ' Max Dose',
+                backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                borderColor: color,
+                data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
+                showLine: true,
+                borderDash: [10],
+                lineTension: 0,
+                hidden: ((Alimit > 0) ? true : false)
                 })
             }
-            var MaxDoselimit = OrganLimits[0].MaxDose
-            if (MaxDoselimit != null) {
-                DVHdatasets.push({
-                        label: organ + ' Max Dose',
-                        backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                        borderColor: color,
-                        data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
-                        showLine: true,
-                        borderDash: [10],
-                        lineTension: 0
-                    })
-                }
-            var Alimit = this.utils.curveArea(Vlimit)
-            if (Alimit > 0) {
-                var Acurve = this.utils.curveArea(curve)
-                SMAreaData.push(
-                    {organ: organ, SM: (Alimit-Acurve)/Acurve})
-                var minDist = this.utils.minDistCurves(Vlimit,curve)
-                SMDistData.push(
-                    {organ: organ, SM: minDist.dist, isProtocol:minDist.isProtocol})
-                }
+        
+        if (Vlimit.length > 0) {
+            DVHdatasets.push({
+                label: organ + ' Protocol Limit',
+                backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                borderColor: color,
+                data: Vlimit,
+                showLine: true,
+                borderDash: [10],
+                lineTension: 0,
+                hidden: ((Alimit > 0) ? true : false)
+                })
             }
         }
     }
@@ -274,15 +315,15 @@ getData(patientId,planId){
                     SMDistdatasets.push({plan: plans[planIndex], data: SMDistData});
                     // Plotters
                     if (planIndex == (planLength-1)){
+                        if (typeof this.dvhChart != "undefined") {
+                            dvhChart = this.dvhChart;
+                            dvhChart.destroy();
+                        }
                         if (typeof planId != "undefined"){
                             var planSelected = planDVH.filter(function(dvh){
                                 return dvh.plan == planId
                             })
                             var datasetsSelected = planSelected[0].datasets
-                            if (typeof this.dvhChart != "undefined") {
-                                dvhChart = this.dvhChart;
-                                dvhChart.destroy();
-                            }
                             var dvhChart = this.createDVH(datasetsSelected, 'dvh');
                             this.dvhChart = dvhChart;
                         }
