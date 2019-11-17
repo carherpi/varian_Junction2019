@@ -1,13 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 
-import Chart from 'chart.js';
+import {Chart, destroy} from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
 
 import StructureColors from './structureColors.js';
 import CriticalOrgans from './criticalOrgans.js';
 import ColorList from './colorList.js';
 import Utils from './utils.js';
+
+declare var Chart
 
 @Component({
   selector: 'app-histograma',
@@ -22,30 +24,18 @@ export class HistogramaComponent implements OnInit {
 
 utils = new Utils;
 datasets = new Array<Object>();
-dvhChart: any[];
-ppChart: any[];
-radarChart: any[];
-
+dvhChart: Object[];
+ppChart: Object[];
+radarChart: Object[];
 
 constructor(
     private apiService: ApiServiceService,
     ) { }
 
 ngOnInit() {
-    if ((typeof this.patientIdSelected != "undefined") 
-        && (typeof this.planIdSelected != "undefined")) {
+    if ( typeof this.patientIdSelected != "undefined" ) {
             this.getData(this.patientIdSelected, this.planIdSelected);
             this.createDVH(this.datasets, 'dvh');
-        } else {
-            if (typeof this.dvhChart != "undefined") {
-                //this.dvhChart.destroy();
-            }
-            if (typeof this.ppChart != "undefined") {
-                //this.ppChart.destroy();
-            }
-            if (typeof this.dvhChart != "undefined") {
-                //this.radarChart.destroy();
-            }
         }
   }
 
@@ -81,7 +71,6 @@ createDVH(datasets, elementID) {
 createParallelPlot(SMdatasets,elementID) {
     let plans = SMdatasets.map(({plan}) => plan);
     var datasets = this.planData2organData(SMdatasets)
-    console.log('neetd',datasets)
     var ctx = document.getElementById(elementID)
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -285,13 +274,30 @@ getData(patientId,planId){
                     SMDistdatasets.push({plan: plans[planIndex], data: SMDistData});
                     // Plotters
                     if (planIndex == (planLength-1)){
-                        var planSelected = planDVH.filter(function(dvh){
-                            return dvh.plan == planId
-                        })
-                        var datasetsSelected = planSelected[0].datasets
-                        this.dvhChart = this.createDVH(datasetsSelected, 'dvh');
-                        this.ppChart = this.createParallelPlot(SMDistdatasets,'pp');
-                        this.radarChart = this.createRadarPlot(SMAreadatasets,'radar');
+                        if (typeof planId != "undefined"){
+                            var planSelected = planDVH.filter(function(dvh){
+                                return dvh.plan == planId
+                            })
+                            var datasetsSelected = planSelected[0].datasets
+                            if (typeof this.dvhChart != "undefined") {
+                                dvhChart = this.dvhChart;
+                                dvhChart.destroy();
+                            }
+                            var dvhChart = this.createDVH(datasetsSelected, 'dvh');
+                            this.dvhChart = dvhChart;
+                        }
+                        if (typeof this.ppChart != "undefined") {
+                            ppChart = this.ppChart;
+                            ppChart.destroy();
+                        }
+                        var ppChart = this.createParallelPlot(SMDistdatasets,'pp');
+                        this.ppChart = ppChart;
+                        if (typeof this.radarChart != "undefined") {
+                            radarChart = this.radarChart;
+                            radarChart.destroy();
+                        }
+                        var radarChart = this.createRadarPlot(SMAreadatasets,'radar');
+                        this.radarChart = radarChart;
                     }
                     })
                 })
