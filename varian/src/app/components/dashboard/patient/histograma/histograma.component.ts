@@ -8,6 +8,7 @@ import StructureColors from './structureColors.js';
 import CriticalOrgans from './criticalOrgans.js';
 import ColorList from './colorList.js';
 import Utils from './utils.js';
+import { MaxLengthValidator } from '@angular/forms';
 
 declare var Chart
 
@@ -119,7 +120,7 @@ createParallelPlot(SMdatasets,elementID) {
             },
             title: {
                 display: true,
-                text: 'Minimum Distance between DVH and protocols',
+                text: 'Normalized minimum distance between Limit and Estimated',
                 fontSize: 16
             }
         }
@@ -153,7 +154,7 @@ createRadarPlot(SMdatasets,elementID) {
             },
             title: {
                 display: true,
-                text: 'Area Integral between protocol limits and DVH',
+                text: 'Area Integral between Limit and Estimated',
                 fontSize: 16
             }
         }
@@ -182,7 +183,7 @@ extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
         var Vlimit = OrganLimits[0].V
         var MaxDoselimit = OrganLimits[0].MaxDose
         var Alimit = this.utils.curveArea(Vlimit)
-        if (Alimit > 0) {
+        if (Math.abs(Alimit) > 0) {
             if (!isTarget) {
                 var Acurve = this.utils.curveArea(curve)
                 SMAreaData.push(
@@ -191,39 +192,73 @@ extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
             var minDist = this.utils.minDistCurves(Vlimit,curve)
             SMDistData.push(
                 {organ: organ, SM: minDist.dist, isProtocol:minDist.isProtocol})
-            }
-        DVHdatasets.push({
-            label: organ,
-            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-            borderColor: color,
-            data: curve,
-            showLine: true,
-            hidden: ((Alimit > 0) ? true : false)
-        })
-        if (MaxDoselimit != null) {
             DVHdatasets.push({
-                label: organ + ' Max Dose',
+                label: organ,
                 backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
                 borderColor: color,
-                data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
+                data: curve,
                 showLine: true,
-                borderDash: [10],
-                lineTension: 0,
-                hidden: ((Alimit > 0) ? true : false)
+                hidden: minDist.isProtocol
+            })
+            if (MaxDoselimit != null) {
+                DVHdatasets.push({
+                    label: organ + ' Max Dose',
+                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                    borderColor: color,
+                    data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
+                    showLine: true,
+                    borderDash: [10],
+                    lineTension: 0,
+                    hidden: minDist.isProtocol
+                    })
+                }
+            
+            if (Vlimit.length > 0) {
+                DVHdatasets.push({
+                    label: organ + ' Protocol Limit',
+                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                    borderColor: color,
+                    data: Vlimit,
+                    showLine: true,
+                    borderDash: [10],
+                    lineTension: 0,
+                    hidden: minDist.isProtocol
+                    })
+                }
+            } else {
+                DVHdatasets.push({
+                    label: organ,
+                    backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                    borderColor: color,
+                    data: curve,
+                    showLine: true,
+                    hidden: true
                 })
-            }
-        
-        if (Vlimit.length > 0) {
-            DVHdatasets.push({
-                label: organ + ' Protocol Limit',
-                backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
-                borderColor: color,
-                data: Vlimit,
-                showLine: true,
-                borderDash: [10],
-                lineTension: 0,
-                hidden: ((Alimit > 0) ? true : false)
-                })
+                if (MaxDoselimit != null) {
+                    DVHdatasets.push({
+                        label: organ + ' Max Dose',
+                        backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                        borderColor: color,
+                        data: [{x:MaxDoselimit,y:0},{x:MaxDoselimit,y:100}],
+                        showLine: true,
+                        borderDash: [10],
+                        lineTension: 0,
+                        hidden: true
+                        })
+                    }
+                
+                if (Vlimit.length > 0) {
+                    DVHdatasets.push({
+                        label: organ + ' Protocol Limit',
+                        backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+                        borderColor: color,
+                        data: Vlimit,
+                        showLine: true,
+                        borderDash: [10],
+                        lineTension: 0,
+                        hidden: true
+                        })
+                    }
             }
         }
     }
@@ -247,21 +282,26 @@ planData2organData(DataIN) {
             return structure.ID == organs[i]
         })
         var color = color2[0].Color
+        var dataNorm = [];
+        var maxData = Math.max(...data);
+        data.forEach(value => {
+            dataNorm.push(value/maxData)
+        })
+        var isTarget = organs[i].includes('PTV')
         datasets = datasets.concat([{
             label: organs[i],
             backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
             borderColor: color,
-            data: data,
+            data: dataNorm,
             showLine: true,
-            lineTension: 0
+            lineTension: 0,
+            order: (isTarget ? 1 : 0)
         }])
     })
     return datasets
 }
 
 planData2datasets(DataIN) {
-    let plans = DataIN.map(({plan}) => plan);
-    console.log('in',DataIN)
     var datasets = [];
     var labels = [];
     DataIN.forEach((plan, planIndex) => {
