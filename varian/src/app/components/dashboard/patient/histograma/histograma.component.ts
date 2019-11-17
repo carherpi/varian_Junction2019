@@ -38,13 +38,13 @@ ngOnInit() {
             this.createDVH(this.datasets, 'dvh');
         } else {
             if (typeof this.dvhChart != "undefined") {
-                this.dvhChart.destroy();
+                //this.dvhChart.destroy();
             }
             if (typeof this.ppChart != "undefined") {
-                this.ppChart.destroy();
+                //this.ppChart.destroy();
             }
             if (typeof this.dvhChart != "undefined") {
-                this.radarChart.destroy();
+                //this.radarChart.destroy();
             }
         }
   }
