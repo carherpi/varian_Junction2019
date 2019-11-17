@@ -23,11 +23,11 @@ const CriticalOrgans = [
         patient: 'Head_Neck',
         organs: [
             {ID: 'PTV56', MaxDose: null, MeanDose: null,
-            V: [{x:0,y:100},{x:40,y:100},{x:53,y:99},{x:56,y:95},{x:70,y:95},{x:70,y:0}]},
+            V: [{x:0,y:100},{x:40,y:100},{x:53,y:99},{x:56,y:95},{x:75,y:0}]},
             {ID: 'PTV63', MaxDose: null, MeanDose: null,
-            V: [{x:0,y:100},{x:50,y:100},{x:60,y:99},{x:63,y:95},{x:70,y:95},{x:70,y:0}]},
+            V: [{x:0,y:100},{x:50,y:100},{x:60,y:99},{x:63,y:95},{x:75,y:0}]},
             {ID: 'PTV70', MaxDose: null, MeanDose: null,
-            V: [{x:0,y:100},{x:60,y:100},{x:67,y:99},{x:70,y:95},{x:75,y:95},{x:75,y:0}]},
+            V: [{x:0,y:100},{x:60,y:100},{x:67,y:99},{x:70,y:95},{x:75,y:0}]},
             {ID: 'BrainStem', MaxDose: 54, MeanDose: null,
             V: [{x:0,y:100},{x:52,y:100},{x:52,y:50},{x:54,y:0}]},
             {ID: 'Spinal Cord', MaxDose: null, MeanDose: null,
@@ -70,7 +70,8 @@ const CriticalOrgans = [
             // V: [{x:0,y:100},{x:50,y:100},{x:50,y:50},{x:60,y:35},{x:65,y:25},{x:70,y:20},{x:75,y:15}]},
             {ID: 'Bladder', MaxDose: null, MeanDose: null, 
             V: [{x:0,y:100},{x:40,y:100},{x:40,y:50},{x:50,y:50},{x:65,y:25},{x:70,y:25},{x:70,y:0}]},
-            {ID: 'prostate_bed', MaxDose: null, MeanDose: null, V: []},
+            {ID: 'prostate_bed', MaxDose: null, MeanDose: null, 
+            V: [{x:0,y:100},{x:40,y:100},{x:40,y:0}]},
             {ID: 'Body', MaxDose: null, MeanDose: null, V: []},
         ]
     }
