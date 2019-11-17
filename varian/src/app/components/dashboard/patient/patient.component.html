@@ -30,7 +30,7 @@
 <app-histograma  [patientIdSelected] = "patient" [planIdSelected]="plan"></app-histograma>
 
 <div class="wrapper-row imagesPatientWrapper">
-        <h3 *ngIf = "plan != undefined"> Original Data </h3>
+        <h3 *ngIf = "plan != undefined"> Plan {{plan}} </h3>
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan"
@@ -52,11 +52,22 @@
         [(ngModel)] = "value">
         </mat-slider>
         </div>
+
+        <form *ngIf = "plan != undefined">
+                <mat-form-field >
+                        <mat-label style="font-size:1.3em;">Plan</mat-label>
+                                <mat-select [(ngModel)]="plan2" name="plan2">
+                                        <mat-option *ngFor="let plan2 of plans" [(value)]="plan2">
+                                                        {{plan2}}
+                                        </mat-option>
+                                </mat-select>
+                </mat-form-field>
+        </form>
         
-        <h3 *ngIf = "plan != undefined"> Disturbed Data </h3>
+        <h3 *ngIf = "plan != undefined"> Plan {{plan2}} </h3>
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
-                [plan]="plan"
+                [plan]="plan2"
                 [value]="value"
                 >
         </app-two-dimensional-image>

@@ -18,6 +18,8 @@ export class PatientComponent implements OnInit {
   plan: string; 
   planInfo: any; 
 
+  plan2: string;
+
   value:any;
 
   rederedBitmaps: any[];
