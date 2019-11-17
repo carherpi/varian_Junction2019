@@ -25,16 +25,20 @@
         </form>
 </div>
 
+<app-histograma [patientIdSelected] = "patient" [planIdSelected]="plan"></app-histograma>
+
 <div class="wrapper-row imagesPatientWrapper">
+        <h3> Original Data </h3>
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan"
                 [value]="value"
                 >
         </app-two-dimensional-image>
+
         <div class="column-imag">
-        <app-checklist></app-checklist>
-        <mat-slider style="margin-top:100px;" *ngIf = "plan != undefined"
+        <app-checklist style="margin-right:5em; margin-top:7em"></app-checklist>
+        <mat-slider style="margin-top:15em" *ngIf = "plan != undefined"
         vertical
         thumbLabel
         [displayWith]="formatLabel"
@@ -45,6 +49,7 @@
         </mat-slider>
         </div>
         
+        <h3> Disturbed Data </h3>
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan"
@@ -53,7 +58,7 @@
         </app-two-dimensional-image>
 </div>
 
-<app-histograma [patientIdSelected] = "patient" [planIdSelected]="plan"></app-histograma>
+
 
 
 
