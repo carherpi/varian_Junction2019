@@ -19,6 +19,7 @@ import { HistogramaComponent } from './components/dashboard/patient/histograma/h
 import { PatientInfoComponent } from './components/dashboard/patient/patient-info/patient-info.component';
 import { PlanInfoComponent } from './components/dashboard/patient/plan-info/plan-info.component';
 import { SmsComponent } from './components/dashboard/sms/sms.component';
+import { DialogpopupComponent } from './components/dashboard/dialogpopup/dialogpopup.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { SmsComponent } from './components/dashboard/sms/sms.component';
     PatientInfoComponent,
     PlanInfoComponent,
     SmsComponent,
+    DialogpopupComponent,
   ],
   imports: [
     
@@ -47,6 +49,7 @@ import { SmsComponent } from './components/dashboard/sms/sms.component';
     BrowserAnimationsModule
   ],
   providers: [PatientComponent],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogpopupComponent]
 })
 export class AppModule { }
