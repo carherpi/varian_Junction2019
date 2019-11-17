@@ -26,7 +26,7 @@ export class TwoDimensionalImageComponent implements OnInit {
     */
     this.value = '1'
     this.minValue = '1'
-    this.maxValue = '100'
+    this.maxValue = '200'
     console.log("data:")
     console.log(this.patient)
     console.log(this.plan)
