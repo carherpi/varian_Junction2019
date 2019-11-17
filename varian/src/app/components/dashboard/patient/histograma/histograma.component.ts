@@ -81,7 +81,7 @@ createDVH(datasets, elementID) {
 createParallelPlot(SMdatasets,elementID) {
     let plans = SMdatasets.map(({plan}) => plan);
     var datasets = this.planData2organData(SMdatasets)
-    var ctx = document.getElementById(elementID).getContext('2d');
+    var ctx = document.getElementById(elementID)
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'line',
@@ -109,7 +109,7 @@ createParallelPlot(SMdatasets,elementID) {
 createRadarPlot(SMdatasets,elementID) {
     let plans = SMdatasets.map(({plan}) => plan);
     var datasets = this.planData2organData(SMdatasets)
-    var ctx = document.getElementById(elementID).getContext('2d');
+    var ctx = document.getElementById(elementID)
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'radar',
