@@ -81,6 +81,17 @@ createDVH(datasets, elementID) {
                 display: true,
                 text: 'DVH',
                 fontSize: 16
+            },
+            legend: {
+                display: true,
+                // onClick: {
+
+                // },
+                // labels: {
+                //     filter: function(legendItem, data) {
+                //         return !(legendItem.text.includes('Protocol') || legendItem.text.includes('Max'))
+                //    }
+                // }
             }
         }
     });
@@ -198,7 +209,7 @@ extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
                 borderColor: color,
                 data: curve,
                 showLine: true,
-                hidden: minDist.isProtocol
+                hidden: (isTarget ? false : minDist.isProtocol)
             })
             if (MaxDoselimit != null) {
                 DVHdatasets.push({
@@ -209,7 +220,7 @@ extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
                     showLine: true,
                     borderDash: [10],
                     lineTension: 0,
-                    hidden: minDist.isProtocol
+                    hidden: (isTarget ? false : minDist.isProtocol)
                     })
                 }
             
@@ -222,7 +233,7 @@ extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
                     showLine: true,
                     borderDash: [10],
                     lineTension: 0,
-                    hidden: minDist.isProtocol
+                    hidden: (isTarget ? false : minDist.isProtocol)
                     })
                 }
             } else {
