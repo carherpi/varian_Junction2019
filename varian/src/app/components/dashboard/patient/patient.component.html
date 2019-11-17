@@ -47,8 +47,8 @@
         thumbLabel
         [displayWith]="formatLabel"
         tickInterval="100"
-        min="{{minValue}}"
-        max="{{maxValue}}"
+        min="1"
+        max="200"
         [(ngModel)] = "value">
         </mat-slider>
         </div>
@@ -57,20 +57,24 @@
                 <mat-form-field >
                         <mat-label style="font-size:1.3em;">Plan</mat-label>
                                 <mat-select [(ngModel)]="plan2" name="plan2">
-                                        <mat-option *ngFor="let plan2 of plans" [(value)]="plan2">
+                                        <mat-option *ngFor="let plan2 of plans2" [(value)]="plan2">
                                                         {{plan2}}
                                         </mat-option>
                                 </mat-select>
                 </mat-form-field>
         </form>
         
-        <h3 *ngIf = "plan != undefined"> Plan {{plan2}} </h3>
+        <!--<h3 *ngIf = "plan != undefined"> Plan {{plan2}} </h3>-->
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan2"
                 [value]="value"
                 >
         </app-two-dimensional-image>
+        <div style="margin-top:5em; margin-right:5em;">
+                <img *ngIf = "plan2 == 'PERTURBED'" src="../../../../../assets/perturbed/{{patient}}/{{plan}}/slice{{value}}.jpg" alt="">
+        </div>
+        
 </div>
 
 
