@@ -19,7 +19,7 @@ const StructureColors = [
     {ID: 'Lung right', Color: 'rgba(255, 41, 162)'},
     {ID: 'Lung left', Color: 'rgba(255, 255, 85)'},
     // {ID: 'Lung-GTV', Color: 'rgba(255, 49, 142)'},
-    {ID: 'Lung-GTV', Color: 'rgba(255, 255, 255)'},
+    {ID: 'Lung-GTV', Color: 'rgba(0, 0, 0)'},
     {ID: 'Spinal Cord', Color: 'rgba(255, 255, 174)'},
     {ID: 'Spinal cord', Color: 'rgba(255, 255, 174)'},
     {ID: 'BrainStem', Color: 'rgba(255, 219, 243)'},

@@ -1,21 +1,22 @@
 
 <div class="wrapper-row selection">
-        <div class="wrapper-row selection2">
-        <form>
-        <mat-form-field>
-        <mat-label style="margin-top: 50px">Patient</mat-label>
-                <mat-select [(ngModel)]="patient" name="patient">
-                         <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
-                                                        {{patient}}
-                        </mat-option>
-                        </mat-select>
-        </mat-form-field>                                
-        </form>
-        <app-patient-info style="width:100%" [patient] = "patientInfo"></app-patient-info>   
-        </div>
-        <form>
+        <div style="padding: 3%; " class="wrapper-row selection2">
+                <form style="background-color:lightblue; padding: 1%;">
                 <mat-form-field>
-                        <mat-label>Plan</mat-label>
+                <mat-label style="font-size:1.3em;">Patient</mat-label>
+                        <mat-select [(ngModel)]="patient" name="patient">
+                                <mat-option *ngFor="let patient of patients" [(value)]="patient" (click) = updatePlans()>
+                                                                {{patient}}
+                                </mat-option>
+                                </mat-select>
+                </mat-form-field>                                
+                </form>
+        <app-patient-info style="width:90%" [patient] = "patientInfo"></app-patient-info>   
+        </div>
+        <div style="padding: 3%;" >
+        <form style="background-color:lightblue;  padding: 3%;">
+                <mat-form-field >
+                        <mat-label style="font-size:1.3em;">Plan</mat-label>
                                 <mat-select [(ngModel)]="plan" name="plan">
                                         <mat-option *ngFor="let plan of plans" [(value)]="plan" (click) = getAllImages()>
                                                         {{plan}}
@@ -23,18 +24,25 @@
                                 </mat-select>
                 </mat-form-field>
         </form>
+        </div>
 </div>
 
+<app-histograma  [patientIdSelected] = "patient" [planIdSelected]="plan"></app-histograma>
+
 <div class="wrapper-row imagesPatientWrapper">
+        <h3 *ngIf = "plan != undefined"> Original Data </h3>
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan"
                 [value]="value"
                 >
         </app-two-dimensional-image>
+
         <div class="column-imag">
-        <app-checklist></app-checklist>
-        <mat-slider style="margin-top:100px;" *ngIf = "plan != undefined"
+
+        <app-checklist *ngIf = "plan != undefined" style="margin-right:3em; margin-top:7em"></app-checklist>
+
+        <mat-slider style="margin-top:15em" *ngIf = "plan != undefined"
         vertical
         thumbLabel
         [displayWith]="formatLabel"
@@ -45,6 +53,7 @@
         </mat-slider>
         </div>
         
+        <h3 *ngIf = "plan != undefined"> Disturbed Data </h3>
         <app-two-dimensional-image class="imagesPatient"
                 [patient]="patient"
                 [plan]="plan"
@@ -53,7 +62,7 @@
         </app-two-dimensional-image>
 </div>
 
-<app-histograma [patientIdSelected] = "patient" [planIdSelected]="plan"></app-histograma>
+
 
 
 

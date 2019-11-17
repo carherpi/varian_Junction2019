@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { DialogpopupComponent } from '../dialogpopup/dialogpopup.component';
+import { MatDialog, MatDialogRef } from '@angular/material';
+
 @Component({
   selector: 'app-checklist',
   templateUrl: './checklist.component.html',
@@ -11,9 +14,22 @@ toCheck1 = ['Area','Distance']//DVH
 toCheck2 = ['Nominal','Perturbed']//Dose Location
 notes = ['Plan 3 seems the most appropiate']
 
-  constructor() { }
+popupDialog : MatDialogRef<DialogpopupComponent>;
+
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
+  }
+
+  openDialog() {
+    this.popupDialog = this.dialog.open(DialogpopupComponent, {
+      width: 'auto',
+      data : { }
+    });
+    this.popupDialog.afterClosed().subscribe(result => {
+      console.log('The POPUP was closed');
+      this.ngOnInit() // Reload view
+    });
   }
 
 }

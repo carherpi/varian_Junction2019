@@ -1,25 +1,28 @@
 <mat-list class="wrapper-row nav-list" *ngIf = "patient != undefined">
         <mat-list-item>
 
-          <h4 mat-line>ID</h4>
+          <h4 style="font-weight: bold;" mat-line>ID</h4>
           <p mat-line> {{patient.Id}} </p>
 
         </mat-list-item>
         <mat-divider></mat-divider>
         <mat-list-item>
-            <h4 mat-line>FirstName</h4>
+            <h4 style="font-weight: bold;" mat-line>FirstName</h4>
             <p mat-line> {{patient.FirstName}} </p>
             </mat-list-item>
         <mat-divider></mat-divider>
+        <!--
         <mat-list-item>
-            <h4 mat-line>MiddleName</h4>
+            <h4 style="font-weight: bold;" mat-line>MiddleName</h4>
             <p mat-line> {{patient.MiddleName}} </p>
             </mat-list-item>
+            
         <mat-divider></mat-divider>
+          -->
         <mat-list-item>
-                <h4 mat-line>LastName</h4>
+                <h4 style="font-weight: bold;"mat-line>LastName</h4>
                 <p mat-line> {{patient.LastName}} </p>
-                </mat-list-item>
+        </mat-list-item>
 
 </mat-list>
 

@@ -1,12 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 
-import Chart from 'chart.js';
+import {Chart, destroy} from 'chart.js';
 import { Observable, combineLatest } from 'rxjs';
 
 import StructureColors from './structureColors.js';
 import CriticalOrgans from './criticalOrgans.js';
+import ColorList from './colorList.js';
 import Utils from './utils.js';
+
+declare var Chart
 
 @Component({
   selector: 'app-histograma',
@@ -21,30 +24,18 @@ export class HistogramaComponent implements OnInit {
 
 utils = new Utils;
 datasets = new Array<Object>();
-dvhChart: any[];
-ppChart: any[];
-radarChart: any[];
-
+dvhChart: Object[];
+ppChart: Object[];
+radarChart: Object[];
 
 constructor(
     private apiService: ApiServiceService,
     ) { }
 
 ngOnInit() {
-    if ((typeof this.patientIdSelected != "undefined") 
-        && (typeof this.planIdSelected != "undefined")) {
+    if ( typeof this.patientIdSelected != "undefined" ) {
             this.getData(this.patientIdSelected, this.planIdSelected);
             this.createDVH(this.datasets, 'dvh');
-        } else {
-            if (typeof this.dvhChart != "undefined") {
-                //this.dvhChart.destroy();
-            }
-            if (typeof this.ppChart != "undefined") {
-                //this.ppChart.destroy();
-            }
-            if (typeof this.dvhChart != "undefined") {
-                //this.radarChart.destroy();
-            }
         }
   }
 
@@ -106,8 +97,10 @@ createParallelPlot(SMdatasets,elementID) {
 }
 
 createRadarPlot(SMdatasets,elementID) {
-    let plans = SMdatasets.map(({plan}) => plan);
-    var datasets = this.planData2organData(SMdatasets)
+    var datasets = [];
+    var labels = [];
+    [datasets, labels] = this.planData2datasets(SMdatasets)
+    // var datasets = SMdatasets
     var ctx = document.getElementById(elementID)
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -115,33 +108,30 @@ createRadarPlot(SMdatasets,elementID) {
         
         // The data for our dataset
         data: {
-            labels: plans,
+            labels: labels,
             datasets: datasets
         },
         // Configuration options go here
-        // options: {
-        //     scales: {
-        //         yAxes: [{
-        //             scaleLabel: {
-        //                 display: true,
-        //                 labelString: 'Security Margin %'
-        //             }
-        //         }]
-        //     }
-        // }
+        options: {
+            scale: {
+                pointLabels: {
+                    display: true,
+                    fontSize: 16,
+                    labelString: 'Security Margin %'
+                }
+            }
+        }
     });
     return chart
 }
 
-extendDataset(DVHdatasets,SMdata,organData,patientId) {
+extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId) {
     var organ = organData["Id"];
-    console.log(organ)
     var PatientCriticalOrgansS = CriticalOrgans.filter(function(data){
         return data.patient == patientId
     })
     var PatientCriticalOrgans = PatientCriticalOrgansS[0].organs
     var CriticalOrgansID = PatientCriticalOrgans.map(({ ID }) => ID)
-    console.log(CriticalOrgansID)
     if (CriticalOrgansID.includes(organ) || organ.includes('PTV') || organ.includes('GTV')){
         var curve = organData["CurvePoints"].map(({Volume: y, ...rest})=>({y, ...rest}));
         curve = curve.map(({Dose: x, ...rest})=>({x, ...rest}));
@@ -185,11 +175,13 @@ extendDataset(DVHdatasets,SMdata,organData,patientId) {
                     })
                 }
             var Alimit = this.utils.curveArea(Vlimit)
-            console.log(organ,Alimit)
             if (Alimit > 0) {
                 var Acurve = this.utils.curveArea(curve)
-                SMdata.push(
+                SMAreaData.push(
                     {organ: organ, SM: (Alimit-Acurve)/Acurve})
+                var minDist = this.utils.minDistCurves(Vlimit,curve)
+                SMDistData.push(
+                    {organ: organ, SM: minDist.dist, isProtocol:minDist.isProtocol})
                 }
             }
         }
@@ -226,6 +218,28 @@ planData2organData(DataIN) {
     return datasets
 }
 
+planData2datasets(DataIN) {
+    let plans = DataIN.map(({plan}) => plan);
+    console.log('in',DataIN)
+    var datasets = [];
+    var labels = [];
+    DataIN.forEach((plan, planIndex) => {
+        var planData = plan.data
+        let organs = planData.map(({organ}) => organ);
+        labels = organs;
+        let SM_organ = planData.map(({SM}) => SM);
+        datasets = datasets.concat([{
+            label: plan.plan,
+            backgroundColor: 'rgb(255, 255, 255, 0)', // Transparent
+            borderColor: ColorList[planIndex],
+            data: SM_organ,
+            showLine: true,
+            lineTension: 0
+        }])
+    })
+    return [datasets, labels]
+}
+
 getData(patientId,planId){
     this.apiService.getPatientPlans(patientId)
     .subscribe( planIDs => {
@@ -237,7 +251,8 @@ getData(patientId,planId){
             requestsPlans.push( this.apiService.getDVHCurves(patientId,plan))
         })
         var planDVH = []
-        var SMdatasets = [];
+        var SMAreadatasets = [];
+        var SMDistdatasets = [];
         combineLatest(requestsPlans).toPromise()
         .then(responsePlans => {
             responsePlans.forEach( (organs, planIndex) => {
@@ -249,21 +264,40 @@ getData(patientId,planId){
                 combineLatest(requestsOrgan).toPromise()
                 .then(responseOrgans => {
                     var DVHdatasets = []
-                    var SMdata = [];
+                    var SMAreaData = [];
+                    var SMDistData = [];
                     responseOrgans.forEach( organData => {
-                        this.extendDataset(DVHdatasets,SMdata,organData,patientId);
+                        this.extendDataset(DVHdatasets,SMAreaData,SMDistData,organData,patientId);
                         })
                     planDVH.push({plan: plan, datasets: DVHdatasets});
-                    SMdatasets.push({plan: plans[planIndex], data: SMdata});
+                    SMAreadatasets.push({plan: plans[planIndex], data: SMAreaData});
+                    SMDistdatasets.push({plan: plans[planIndex], data: SMDistData});
                     // Plotters
                     if (planIndex == (planLength-1)){
-                        var planSelected = planDVH.filter(function(dvh){
-                            return dvh.plan == planId
-                        })
-                        var datasetsSelected = planSelected[0].datasets
-                        this.dvhChart = this.createDVH(datasetsSelected, 'dvh');
-                        this.ppChart = this.createParallelPlot(SMdatasets,'pp');
-                        this.radarChart = this.createRadarPlot(SMdatasets,'radar');
+                        if (typeof planId != "undefined"){
+                            var planSelected = planDVH.filter(function(dvh){
+                                return dvh.plan == planId
+                            })
+                            var datasetsSelected = planSelected[0].datasets
+                            if (typeof this.dvhChart != "undefined") {
+                                dvhChart = this.dvhChart;
+                                dvhChart.destroy();
+                            }
+                            var dvhChart = this.createDVH(datasetsSelected, 'dvh');
+                            this.dvhChart = dvhChart;
+                        }
+                        if (typeof this.ppChart != "undefined") {
+                            ppChart = this.ppChart;
+                            ppChart.destroy();
+                        }
+                        var ppChart = this.createParallelPlot(SMDistdatasets,'pp');
+                        this.ppChart = ppChart;
+                        if (typeof this.radarChart != "undefined") {
+                            radarChart = this.radarChart;
+                            radarChart.destroy();
+                        }
+                        var radarChart = this.createRadarPlot(SMAreadatasets,'radar');
+                        this.radarChart = radarChart;
                     }
                     })
                 })
