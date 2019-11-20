@@ -11,7 +11,7 @@ export class SmsComponent implements OnInit {
 
 
 
-  username = "kikoncius@gmail.com"
+  username = "email@remov.ed"
   password = "testjunction1"
 
   number: String
@@ -27,7 +27,7 @@ export class SmsComponent implements OnInit {
   sendMessage(form) {    
     
     var options = {
-      phone: "+34600345916",
+      phone: "+66666666666",
       message: this.textMessage
     }
 
