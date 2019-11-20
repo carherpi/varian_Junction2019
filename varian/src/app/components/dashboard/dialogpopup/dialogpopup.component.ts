@@ -27,7 +27,7 @@ export class DialogpopupComponent implements OnInit {
   sendMessage(form) {    
     
     var options = {
-      phone: "+34600345916",
+      phone: "+66666666666",
       message: this.textMessage
     }
 
