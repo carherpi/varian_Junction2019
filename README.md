@@ -2,6 +2,12 @@
 
 This work was produced during HackJunction 2019, 15-17 November, and submitted for the Varian Medical Systems challenge 'Effective Radiation Therapy Plan Review'. More info can be found here: https://2019.hackjunction.com/challenges/effective-radiation-therapy-plan-review
 
+<pre>
+Credentials:
+User: Doc
+Password: 123456
+</pre>
+
 # Introduction
 
 Radiation therapies are planned in a two step process, where firstly the physicist optimizes the arrangement of ionizing radiation, and secondly the oncologist reviews and approves -or not- the plan designed by the physicist. During the treatment, target regions must obtain enough therapeutic radiation while avoiding too much radiation to critical organs and normal tissue.
@@ -23,3 +29,12 @@ Lastly, the web app has a checklist informing the oncologist of the steps that h
 We believe that the maximum recommended dose for critical organs could be individualized for each patient considering special conditions such as organ removals or amputations, instead of using the generally recommended by expert institutions.
 Also, the radiation dose on non targetted areas could be better calculated by taking into account the section of organ volume that goes into the radiation region due to intra and inter-fraction uncertainties.
 Lastly, we believe that future applications of cloud computing and machine learning in the field could be further investigated.
+
+# Images
+
+![Login](./images/login.png)
+![Lung Plan](./images/lung_plan.png)
+![Lung DVH](./images/lung_dvh_plancomparison.png)
+![Lung Perturbed](./images/lung_nominal_perturbed.png)
+![Lung Nominal](./images/lung_nominal_plancomparison.png)
+![Message](./images/checklist_message.png)
